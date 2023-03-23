@@ -1,10 +1,14 @@
-﻿namespace Stocks;
+﻿namespace Stocks.HttpClientArk;
 
 public class Download
 {
-    private static HttpClient _client = new HttpClient();
+    private HttpClient _client;
 
-    static async Task<string?> GetEtfHoldingsCsv(string path)
+    public Download(HttpClient client)
+    {
+        _client = client;
+    }
+    public async Task<string?> GetEtfHoldingsCsv(string path)
     {
         string? csv = null;
         HttpResponseMessage responseMessage = await _client.GetAsync(path);

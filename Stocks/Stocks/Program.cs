@@ -1,10 +1,13 @@
-﻿namespace Stocks
+﻿using Stocks.HttpClientArk;
+
+namespace Stocks
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var client = new Client();
+            client.RunClient();
         }
     }
 }
