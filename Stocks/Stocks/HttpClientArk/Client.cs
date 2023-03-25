@@ -1,8 +1,12 @@
-﻿namespace Stocks.HttpClientArk;
+﻿using Stocks.Files;
+
+namespace Stocks.HttpClientArk;
 
 public class Client
 {
     static readonly HttpClient _client = new();
+    private const string FILE_DIRECTORY = ".";
+    private const string FILE_FORMAT = "{0:dd_MM_yyyy}";
 
     public Client()
     {
@@ -13,10 +17,16 @@ public class Client
         var download = new Download(_client);
         var urlPath = "https://ark-funds.com/wp-content/uploads/funds-etf-csv/ARK_INNOVATION_ETF_ARKK_HOLDINGS.csv";
         var csv = await download.GetEtfHoldingsCsv(urlPath);
-        if (csv is not null)
+        if (string.IsNullOrEmpty(csv))
         {
-            Console.WriteLine(csv);
+            return;
         }
+        Console.WriteLine(csv);
+        var fileService = new DateFileService(FILE_DIRECTORY, FILE_FORMAT, ".csv");
+        await fileService.SaveContent(csv);
+
+        var yesterday = DateTime.Now.AddDays(-1);
+        var loadedCsv = await fileService.LoadContent(yesterday);
     }
 
     public void RunClient()
