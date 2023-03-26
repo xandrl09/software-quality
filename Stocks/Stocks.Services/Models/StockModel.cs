@@ -12,5 +12,6 @@ namespace Stocks.Services.Models
         public string Company { get; init; }
         public string Ticker { get; init; }
         public int Shares { get; init; }
+        public string Weight { get; init; }
     }
 }
