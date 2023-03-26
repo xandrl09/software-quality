@@ -1,4 +1,7 @@
-﻿namespace Stocks.Files;
+﻿using Stocks.Helpers;
+using System.Globalization;
+
+namespace Stocks.Files;
 
 public class DateFileService: IFileService
 {
@@ -15,23 +18,45 @@ public class DateFileService: IFileService
         _extension = extension;
      }
 
-    private string GetFilePath(DateTime date)
+    private string GetPathByDate(DateTime date)
     {
-        string path = string.Format(_fileNameFormat, date);
-        path = Path.Join(_saveDirectory, path + _extension);
-        return path;
+        return PathHelper.GetDateFilePath(DateTime.Today, _fileNameFormat, _saveDirectory, _extension);
     }
 
     public async Task SaveContent(string content)
     {
-        string path = GetFilePath(DateTime.Today);
+        string path = GetPathByDate(DateTime.Today);
         await File.WriteAllTextAsync(path, content);
+    }
+
+    private async Task<string> LoadContent(string path)
+    {
+        return await File.ReadAllTextAsync(path);
     }
 
     public async Task<string> LoadContent(DateTime date)
     {
-        string path = GetFilePath(date);
-        string content = await File.ReadAllTextAsync(path);
+        string path = GetPathByDate(date);
+        string content = await LoadContent(path);
         return content;
+    }
+
+    private DateTime ParseFileName(string fileName)
+    {
+        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _fileNameFormat, provider: CultureInfo.CurrentCulture);
+    }
+
+    public async Task<string> LoadLastAvailableContent()
+    {
+        var availableFileNames = Directory.GetFiles(_saveDirectory, $"*{_extension}");
+
+        var lastPreviousFileName = availableFileNames
+            .Select(x => new KeyValuePair<DateTime, string>(ParseFileName(x), x))
+            .OrderByDescending(x => x.Key)
+            .Skip(1)
+            .FirstOrDefault()
+            .Value;
+
+        return await LoadContent(lastPreviousFileName);
     }
 }

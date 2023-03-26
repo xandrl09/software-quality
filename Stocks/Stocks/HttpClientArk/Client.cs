@@ -1,4 +1,5 @@
 ﻿using Stocks.Files;
+using Stocks.Helpers;
 using Stocks.Parsers;
 
 namespace Stocks.HttpClientArk;
@@ -7,7 +8,8 @@ public class Client
 {
     static readonly HttpClient _client = new();
     private const string FILE_DIRECTORY = ".";
-    private const string FILE_FORMAT = "{0:dd_MM_yyyy}";
+    private const string FILE_FORMAT = "dd_MM_yyyy";
+    private const string FILE_EXTENSION = ".csv";
 
     public Client()
     {
@@ -23,15 +25,13 @@ public class Client
             return;
         }
         Console.WriteLine(csv);
-        var fileService = new DateFileService(FILE_DIRECTORY, FILE_FORMAT, ".csv");
+        var fileService = new DateFileService(FILE_DIRECTORY, FILE_FORMAT, FILE_EXTENSION);
         await fileService.SaveContent(csv);
 
-        var yesterday = DateTime.Now.AddDays(-1);
-        var loadedCsv = await fileService.LoadContent(yesterday);
+        var loadedCsv = await fileService.LoadLastAvailableContent();
         var parser = new CsvParser();
 
-        string path = string.Format(FILE_FORMAT, DateTime.Today);
-        path = Path.Join(FILE_DIRECTORY, path + ".csv");
+        string path = PathHelper.GetDateFilePath(DateTime.Today, FILE_FORMAT, FILE_DIRECTORY, FILE_EXTENSION);
 
         var stocks = await parser.GetStocksAsync(path);
     }
