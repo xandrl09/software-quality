@@ -1,8 +1,9 @@
 ﻿using Stocks.Services.Files;
 using Stocks.Services.Helpers;
+using Stocks.Services.HttpClientArk;
 using Stocks.Services.Parsers;
 
-namespace Stocks.Services.HttpClientArk;
+namespace Stocks.Console;
 
 public class Client
 {
@@ -24,7 +25,7 @@ public class Client
         {
             return;
         }
-        Console.WriteLine(csv);
+        System.Console.WriteLine(csv);
         var fileService = new DateFileService(FILE_DIRECTORY, FILE_FORMAT, FILE_EXTENSION);
         await fileService.SaveContent(csv);
 
