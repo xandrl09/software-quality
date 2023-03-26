@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Stocks.Services.Files;
 
-public class DateFileService: IFileService
+public class DateFileService : IFileService
 {
     private string _fileNameFormat;
     private string _saveDirectory;
@@ -16,7 +16,7 @@ public class DateFileService: IFileService
         _saveDirectory = saveDirectory;
         _fileNameFormat = fileNameFormat;
         _extension = extension;
-     }
+    }
 
     private string GetPathByDate(DateTime date)
     {
@@ -48,15 +48,18 @@ public class DateFileService: IFileService
 
     public async Task<string> LoadLastAvailableContent()
     {
+        return await LoadContent(GetLastAvailableFilePath());
+    }
+
+    public string GetLastAvailableFilePath()
+    {
         var availableFileNames = Directory.GetFiles(_saveDirectory, $"*{_extension}");
 
-        var lastPreviousFileName = availableFileNames
+        return availableFileNames
             .Select(x => new KeyValuePair<DateTime, string>(ParseFileName(x), x))
             .OrderByDescending(x => x.Key)
             .Skip(1)
             .FirstOrDefault()
             .Value;
-
-        return await LoadContent(lastPreviousFileName);
     }
 }
