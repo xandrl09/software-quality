@@ -1,6 +1,8 @@
-﻿using Stocks.Services.Files;
+﻿using Stocks.Services.Diff;
+using Stocks.Services.Files;
 using Stocks.Services.Helpers;
 using Stocks.Services.HttpClientArk;
+using Stocks.Services.Models;
 using Stocks.Services.Parsers;
 
 namespace Stocks.Console;
@@ -30,11 +32,39 @@ public class Client
         await fileService.SaveContent(csv);
 
         var loadedCsv = await fileService.LoadLastAvailableContent();
+
+        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, FILE_FORMAT, FILE_DIRECTORY, FILE_EXTENSION);
+        string pathToOlderFile = fileService.GetLastAvailableFilePath();
+
         var parser = new CsvParser();
+        var recentHoldings = await parser.GetStocksAsync(pathToRecentFile);
+        var pastHoldings = await parser.GetStocksAsync(pathToOlderFile);
 
-        string path = PathHelper.GetDateFilePath(DateTime.Today, FILE_FORMAT, FILE_DIRECTORY, FILE_EXTENSION);
+        var diffService = new HoldingsDifferenceService();
+        var diffResult = diffService.GetDifference(recentHoldings, pastHoldings);
+        
+        PrintResultToConsole(diffResult);
+    }
 
-        var stocks = await parser.GetStocksAsync(path);
+    private void PrintResultToConsole(HoldingsDifferenceModel diffResult)
+    {
+        System.Console.WriteLine("New positions:");
+        foreach(var newPositon in diffResult.NewPositions)
+        {
+            System.Console.WriteLine(newPositon.Ticker + ", " + newPositon.Company + ", " + newPositon.Shares + ", " + newPositon.Weight);
+        }
+
+        System.Console.WriteLine("Increased positions:");
+        foreach (var increasedPositon in diffResult.IncreasedPositons)
+        {
+            System.Console.WriteLine(increasedPositon.Ticker + ", " + increasedPositon.CompanyName + ", " + increasedPositon.DifferenceInShares + ", " + increasedPositon.Weight);
+        }
+
+        System.Console.WriteLine("Decreased positions:");
+        foreach (var reducedPosition in diffResult.ReducedPositions)
+        {
+            System.Console.WriteLine(reducedPosition.Ticker + ", " + reducedPosition.CompanyName + ", " + reducedPosition.DifferenceInShares + ", " + reducedPosition.Weight);
+        }
     }
 
     public void RunClient()
