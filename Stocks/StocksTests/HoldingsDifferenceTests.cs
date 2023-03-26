@@ -18,7 +18,7 @@ public class HoldingsDifferenceTests
     }
 
     [Test]
-    public void GetResult_NewStockAdded_ReturnsSucces()
+    public void GetDifference_NewStockAdded_ReturnsNewPositon()
     {
         // arrange
         var newReport = new List<StockModel> {
@@ -44,7 +44,7 @@ public class HoldingsDifferenceTests
     }
 
     [Test]
-    public void GetResult_StockPositionIncreased_ReturnsSucces()
+    public void GetDifference_StockPositionIncreased_ReturnsIncreasedPosition()
     {
         // arrange
         var newReport = new List<StockModel> {
@@ -70,7 +70,7 @@ public class HoldingsDifferenceTests
     }
 
     [Test]
-    public void GetResult_StockPositionReduced_ReturnsSucces()
+    public void GetDifference_StockPositionReduced_ReturnsReducedPosition()
     {
         // arrange
         var newReport = new List<StockModel> {
@@ -96,7 +96,7 @@ public class HoldingsDifferenceTests
     }
 
     [Test]
-    public void GetResult_StockPositionReducedToZero_ReturnsSucces()
+    public void GetDifference_StockPositionReducedToZero_ReturnsReducedPosition()
     {
         // arrange
         var newReport = new List<StockModel> {
