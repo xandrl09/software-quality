@@ -64,6 +64,7 @@ public class HoldingsDifferenceTests
             Assert.That(result.IncreasedPositons.FirstOrDefault()?.Ticker, Is.EqualTo("GOOG"));
             Assert.That(result.IncreasedPositons.FirstOrDefault()?.CompanyName, Is.EqualTo("Google"));
             Assert.That(result.IncreasedPositons.FirstOrDefault()?.DifferenceInShares, Is.EqualTo(80));
+            Assert.That(result.IncreasedPositons.FirstOrDefault()?.PercentageDifferenceInShares, Is.EqualTo(800));
             Assert.That(result.IncreasedPositons.FirstOrDefault()?.Weight, Is.EqualTo("90%"));
         });
     }
@@ -89,6 +90,7 @@ public class HoldingsDifferenceTests
             Assert.That(result.ReducedPositions.FirstOrDefault()?.Ticker, Is.EqualTo("GOOG"));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.CompanyName, Is.EqualTo("Google"));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.DifferenceInShares, Is.EqualTo(-8));
+            Assert.That(result.ReducedPositions.FirstOrDefault()?.PercentageDifferenceInShares, Is.EqualTo(-80));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.Weight, Is.EqualTo("17%"));
         });
     }
@@ -113,6 +115,7 @@ public class HoldingsDifferenceTests
             Assert.That(result.ReducedPositions.FirstOrDefault()?.Ticker, Is.EqualTo("GOOG"));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.CompanyName, Is.EqualTo("Google"));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.DifferenceInShares, Is.EqualTo(-10));
+            Assert.That(result.ReducedPositions.FirstOrDefault()?.PercentageDifferenceInShares, Is.EqualTo(-100));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.Weight, Is.EqualTo("0%"));
         });
     }

@@ -39,6 +39,7 @@ namespace Stocks.Services.Diff
                     Ticker = past.Ticker,
                     CompanyName = past.Company,
                     DifferenceInShares = -past.Shares,
+                    PercentageDifferenceInShares = -100,
                     Weight = "0%",
                 });
         }
@@ -54,8 +55,16 @@ namespace Stocks.Services.Diff
                     Ticker = actual.Ticker,
                     CompanyName = actual.Company,
                     DifferenceInShares = actual.Shares - past.Shares,
+                    PercentageDifferenceInShares = CalculatePercentualDifference(actual.Shares, past.Shares),
                     Weight = actual.Weight,
                 });
+        }
+
+        private double CalculatePercentualDifference(double newValue, double oldValue)
+        {
+            double percentualDifference = ((newValue - oldValue) / oldValue) * 100;
+
+            return Math.Round(percentualDifference, 2);
         }
     }
 }

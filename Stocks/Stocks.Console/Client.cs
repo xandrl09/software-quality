@@ -51,19 +51,19 @@ public class Client
         System.Console.WriteLine("New positions:");
         foreach(var newPositon in diffResult.NewPositions)
         {
-            System.Console.WriteLine(newPositon.Ticker + ", " + newPositon.Company + ", " + newPositon.Shares + ", " + newPositon.Weight);
+            System.Console.WriteLine($"{newPositon.Ticker}, {newPositon.Company}, {newPositon.Shares}, {newPositon.Weight}");
         }
 
         System.Console.WriteLine("Increased positions:");
         foreach (var increasedPositon in diffResult.IncreasedPositons)
         {
-            System.Console.WriteLine(increasedPositon.Ticker + ", " + increasedPositon.CompanyName + ", " + increasedPositon.DifferenceInShares + ", " + increasedPositon.Weight);
+            System.Console.WriteLine($"{increasedPositon.Ticker}, {increasedPositon.CompanyName}, {increasedPositon.DifferenceInShares}({increasedPositon.PercentageDifferenceInShares}%), {increasedPositon.Weight}");
         }
 
-        System.Console.WriteLine("Decreased positions:");
+        System.Console.WriteLine("Reduced positions:");
         foreach (var reducedPosition in diffResult.ReducedPositions)
         {
-            System.Console.WriteLine(reducedPosition.Ticker + ", " + reducedPosition.CompanyName + ", " + reducedPosition.DifferenceInShares + ", " + reducedPosition.Weight);
+            System.Console.WriteLine($"{reducedPosition.Ticker}, {reducedPosition.CompanyName}, {reducedPosition.DifferenceInShares}({reducedPosition.PercentageDifferenceInShares}%), {reducedPosition.Weight}");
         }
     }
 
