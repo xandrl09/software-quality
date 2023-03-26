@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Stocks.HttpClientArk;
+namespace Stocks.Services.HttpClientArk;
 
 public class Download
 {

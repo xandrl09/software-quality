@@ -1,9 +1,9 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Stocks.Models;
+using Stocks.Services.Models;
 using System.Globalization;
 
-namespace Stocks.Parsers;
+namespace Stocks.Services.Parsers;
 
 public class CsvParser : IParser
 {

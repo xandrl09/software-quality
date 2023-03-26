@@ -1,8 +1,8 @@
-﻿using Stocks.Files;
-using Stocks.Helpers;
-using Stocks.Parsers;
+﻿using Stocks.Services.Files;
+using Stocks.Services.Helpers;
+using Stocks.Services.Parsers;
 
-namespace Stocks.HttpClientArk;
+namespace Stocks.Services.HttpClientArk;
 
 public class Client
 {

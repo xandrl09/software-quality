@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Stocks.Models
+namespace Stocks.Services.Models
 {
     public class StockModel
     {

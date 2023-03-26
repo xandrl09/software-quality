@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Stocks.Files
+namespace Stocks.Services.Files
 {
     public interface IFileService
     {

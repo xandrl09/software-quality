@@ -1,7 +1,7 @@
-﻿using Stocks.Helpers;
+﻿using Stocks.Services.Helpers;
 using System.Globalization;
 
-namespace Stocks.Files;
+namespace Stocks.Services.Files;
 
 public class DateFileService: IFileService
 {
