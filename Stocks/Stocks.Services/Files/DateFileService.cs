@@ -20,7 +20,7 @@ public class DateFileService: IFileService
 
     private string GetPathByDate(DateTime date)
     {
-        return PathHelper.GetDateFilePath(DateTime.Today, _fileNameFormat, _saveDirectory, _extension);
+        return PathHelper.GetDateFilePath(date, _fileNameFormat, _saveDirectory, _extension);
     }
 
     public async Task SaveContent(string content)
