@@ -4,13 +4,13 @@ namespace Stocks.Services.Diff;
 
 public class HoldingsDifferenceTests
 {
-    private HoldingsDifferenceService _diffMaker;
+    private HoldingsDifferenceService _holdingsDifferenceService;
     private List<StockModel> _oldReport;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        _diffMaker = new HoldingsDifferenceService();
+        _holdingsDifferenceService = new HoldingsDifferenceService();
         _oldReport = new List<StockModel> {
             new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "50%" },
             new StockModel { Ticker = "GOOG", Company = "Google", Shares = 10, Weight = "50%" },
@@ -28,7 +28,7 @@ public class HoldingsDifferenceTests
         };
 
         // act
-        var result = _diffMaker.GetDifference(newReport, _oldReport);
+        var result = _holdingsDifferenceService.GetDifference(newReport, _oldReport);
 
         // assert
         Assert.Multiple(() =>
@@ -53,7 +53,7 @@ public class HoldingsDifferenceTests
         };
 
         // act
-        var result = _diffMaker.GetDifference(newReport, _oldReport);
+        var result = _holdingsDifferenceService.GetDifference(newReport, _oldReport);
 
         // assert
         Assert.Multiple(() =>
@@ -79,7 +79,7 @@ public class HoldingsDifferenceTests
         };
 
         // act
-        var result = _diffMaker.GetDifference(newReport, _oldReport);
+        var result = _holdingsDifferenceService.GetDifference(newReport, _oldReport);
 
         // assert
         Assert.Multiple(() =>
@@ -104,7 +104,7 @@ public class HoldingsDifferenceTests
         };
 
         // act
-        var result = _diffMaker.GetDifference(newReport, _oldReport);
+        var result = _holdingsDifferenceService.GetDifference(newReport, _oldReport);
 
         // assert
         Assert.Multiple(() =>
