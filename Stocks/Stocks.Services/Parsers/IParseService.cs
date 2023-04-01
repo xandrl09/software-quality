@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Stocks.Services.Parsers
 {
-    public interface IParser
+    public interface IParseService
     {
         public Task<IEnumerable<StockModel>> GetStocksAsync(string filePath);
     }

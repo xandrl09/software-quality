@@ -12,16 +12,16 @@ namespace Stocks.Console;
 
 public class Client
 {
-    private readonly IDownload _download;
+    private readonly IDownloadService _download;
     private readonly IFileService _dateFileService;
-    private readonly IParser _parser;
+    private readonly IParseService _parser;
     private readonly IHoldingsDifferenceService _differenceService;
     private readonly IOutputService _outputService;
     private readonly Settings _settings;
 
-    public Client(IDownload download,
+    public Client(IDownloadService download,
         IFileService dateFileService,
-        IParser parser,
+        IParseService parser,
         IHoldingsDifferenceService differenceService,
         IConfiguration configuration,
         IOutputService outputService)

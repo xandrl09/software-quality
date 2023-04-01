@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Stocks.Services.Parsers;
 
-public class CsvParser : IParser
+public class CsvParseService : IParseService
 {
     public async Task<IEnumerable<StockModel>> GetStocksAsync(string filePath)
     {

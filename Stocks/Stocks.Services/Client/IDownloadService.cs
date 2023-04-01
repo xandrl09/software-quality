@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Stocks.Services.Client
 {
-    public interface IDownload
+    public interface IDownloadService
     {
         public Task<string?> DownloadFile(string path);
     }

@@ -4,12 +4,12 @@ using System.IO;
 
 namespace Stocks.Services.Client;
 
-public class Download: IDownload
+public class DownloadService: IDownloadService
 {
     private HttpClient _client;
     private readonly Settings _settings;
 
-    public Download(IConfiguration configuration)
+    public DownloadService(IConfiguration configuration)
     {
         _settings = Settings.Get(configuration);
         _client = new HttpClient();

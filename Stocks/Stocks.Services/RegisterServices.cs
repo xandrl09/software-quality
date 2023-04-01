@@ -16,10 +16,10 @@ namespace Stocks.Services
     {
         public static void Register(IServiceCollection services)
         {
-            services.AddTransient<IDownload, Download>();
+            services.AddTransient<IDownloadService, DownloadService>();
             services.AddTransient<IHoldingsDifferenceService, HoldingsDifferenceService>();
             services.AddTransient<IFileService, DateFileService>();
-            services.AddTransient<IParser, CsvParser>();
+            services.AddTransient<IParseService, CsvParseService>();
             services.AddTransient<IOutputService, FileOutputService>();
         }
     }
