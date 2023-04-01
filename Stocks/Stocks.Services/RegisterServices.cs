@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Stocks.Services.Output;
 
 namespace Stocks.Services
 {
@@ -19,6 +20,7 @@ namespace Stocks.Services
             services.AddTransient<IHoldingsDifferenceService, HoldingsDifferenceService>();
             services.AddTransient<IFileService, DateFileService>();
             services.AddTransient<IParser, CsvParser>();
+            services.AddTransient<IOutputService, FileOutputService>();
         }
     }
 }

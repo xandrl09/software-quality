@@ -6,6 +6,7 @@ using Stocks.Services.Client;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
 using Stocks.Services.Parsers;
+using Stocks.Services.Output;
 
 namespace Stocks.Console;
 
@@ -15,18 +16,21 @@ public class Client
     private readonly IFileService _dateFileService;
     private readonly IParser _parser;
     private readonly IHoldingsDifferenceService _differenceService;
+    private readonly IOutputService _outputService;
     private readonly Settings _settings;
 
     public Client(IDownload download,
         IFileService dateFileService,
         IParser parser,
         IHoldingsDifferenceService differenceService,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IOutputService outputService)
     {
         _download = download;
         _dateFileService = dateFileService;
         _parser = parser;
         _differenceService = differenceService;
+        _outputService = outputService;
 
         _settings = Settings.Get(configuration);
     }
@@ -49,6 +53,9 @@ public class Client
         var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
         
         PrintResultToConsole(diffResult);
+
+        string outputPath = Path.Combine(_settings.SaveDirectory, $"diff_{PathHelper.FormatDateTime(DateTime.Today, _settings.FileNameFormat)}.txt");
+        await _outputService.Output(diffResult, outputPath);
     }
 
     private void PrintResultToConsole(HoldingsDifferenceModel diffResult)
