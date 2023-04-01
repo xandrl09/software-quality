@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="31_03_2023.csv" />
     <None Remove="appsettings.json" />
   </ItemGroup>
 
@@ -23,6 +24,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Stocks.Services\Stocks.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="26_03_2023.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
