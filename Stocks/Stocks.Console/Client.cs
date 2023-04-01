@@ -54,8 +54,7 @@ public class Client
         
         PrintResultToConsole(diffResult);
 
-        string outputPath = Path.Combine(_settings.SaveDirectory, $"diff_{PathHelper.FormatDateTime(DateTime.Today, _settings.FileNameFormat)}.txt");
-        await _outputService.Output(diffResult, outputPath);
+        await _outputService.Output(diffResult, _settings.SaveDirectory);
     }
 
     private void PrintResultToConsole(HoldingsDifferenceModel diffResult)

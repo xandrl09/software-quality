@@ -20,7 +20,7 @@ namespace Stocks.Services
             services.AddTransient<IHoldingsDifferenceService, HoldingsDifferenceService>();
             services.AddTransient<IFileService, DateFileService>();
             services.AddTransient<IParseService, CsvParseService>();
-            services.AddTransient<IOutputService, FileOutputService>();
+            services.AddTransient<IOutputService, HtmlOutputService>();
         }
     }
 }
