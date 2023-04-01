@@ -2,7 +2,7 @@
 using Stocks.Services.Diff;
 using Stocks.Services.Files;
 using Stocks.Services.Helpers;
-using Stocks.Services.HttpClientArk;
+using Stocks.Services.Client;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
 using Stocks.Services.Parsers;
@@ -11,13 +11,13 @@ namespace Stocks.Console;
 
 public class Client
 {
-    private readonly Download _download;
+    private readonly IDownload _download;
     private readonly IFileService _dateFileService;
     private readonly IParser _parser;
     private readonly IHoldingsDifferenceService _differenceService;
     private readonly Settings _settings;
 
-    public Client(Download download,
+    public Client(IDownload download,
         IFileService dateFileService,
         IParser parser,
         IHoldingsDifferenceService differenceService,
@@ -32,7 +32,7 @@ public class Client
     }
     public async Task RunAsync()
     {
-        var csv = await _download.GetEtfHoldingsCsv(_settings.CsvUrl);
+        var csv = await _download.DownloadFile(_settings.CsvUrl);
         if (string.IsNullOrEmpty(csv))
         {
             return;

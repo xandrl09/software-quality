@@ -2,9 +2,9 @@
 using Stocks.Services.Models.Configuration;
 using System.IO;
 
-namespace Stocks.Services.HttpClientArk;
+namespace Stocks.Services.Client;
 
-public class Download
+public class Download: IDownload
 {
     private HttpClient _client;
     private readonly Settings _settings;
@@ -26,7 +26,7 @@ public class Download
         return request;
     }
 
-    public async Task<string?> GetEtfHoldingsCsv(string path)
+    public async Task<string?> DownloadFile(string path)
     {
         string? csv = null;
 
