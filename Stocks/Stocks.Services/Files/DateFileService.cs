@@ -1,26 +1,22 @@
-﻿using Stocks.Services.Helpers;
+﻿using Microsoft.Extensions.Configuration;
+using Stocks.Services.Helpers;
+using Stocks.Services.Models.Configuration;
 using System.Globalization;
 
 namespace Stocks.Services.Files;
 
 public class DateFileService : IFileService
 {
-    private string _fileNameFormat;
-    private string _saveDirectory;
-    private string _extension;
+    private readonly Settings _settings;
 
-    public DateFileService(string saveDirectory,
-        string fileNameFormat,
-        string extension)
+    public DateFileService(IConfiguration configuration)
     {
-        _saveDirectory = saveDirectory;
-        _fileNameFormat = fileNameFormat;
-        _extension = extension;
+        _settings = Settings.Get(configuration);
     }
 
     private string GetPathByDate(DateTime date)
     {
-        return PathHelper.GetDateFilePath(date, _fileNameFormat, _saveDirectory, _extension);
+        return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
     }
 
     public async Task SaveContent(string content)
@@ -43,7 +39,7 @@ public class DateFileService : IFileService
 
     private DateTime ParseFileName(string fileName)
     {
-        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _fileNameFormat, provider: CultureInfo.CurrentCulture);
+        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _settings.FileNameFormat, provider: CultureInfo.CurrentCulture);
     }
 
     public async Task<string> LoadLastAvailableContent()
@@ -53,7 +49,7 @@ public class DateFileService : IFileService
 
     public string GetLastAvailableFilePath()
     {
-        var availableFileNames = Directory.GetFiles(_saveDirectory, $"*{_extension}");
+        var availableFileNames = Directory.GetFiles(_settings.SaveDirectory, $"*{_settings.FileExtension}");
 
         return availableFileNames
             .Select(x => new KeyValuePair<DateTime, string>(ParseFileName(x), x))

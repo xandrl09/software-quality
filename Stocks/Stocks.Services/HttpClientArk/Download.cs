@@ -1,15 +1,18 @@
-﻿using System.IO;
+﻿using Microsoft.Extensions.Configuration;
+using Stocks.Services.Models.Configuration;
+using System.IO;
 
 namespace Stocks.Services.HttpClientArk;
 
 public class Download
 {
     private HttpClient _client;
-    private const string USER_AGENT = "StocksService/1.0";
+    private readonly Settings _settings;
 
-    public Download(HttpClient client)
+    public Download(IConfiguration configuration)
     {
-        _client = client;
+        _settings = Settings.Get(configuration);
+        _client = new HttpClient();
     }
 
     private HttpRequestMessage CreateGetRequestMessage(string url)
@@ -19,7 +22,7 @@ public class Download
             RequestUri = new Uri(url),
             Method = HttpMethod.Get
         };
-        request.Headers.Add("User-Agent", USER_AGENT);
+        request.Headers.Add("User-Agent", _settings.UserAgent);
         return request;
     }
 

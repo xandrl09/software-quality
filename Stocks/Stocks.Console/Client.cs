@@ -1,47 +1,52 @@
-﻿using Stocks.Services.Diff;
+﻿using Microsoft.Extensions.Configuration;
+using Stocks.Services.Diff;
 using Stocks.Services.Files;
 using Stocks.Services.Helpers;
 using Stocks.Services.HttpClientArk;
 using Stocks.Services.Models;
+using Stocks.Services.Models.Configuration;
 using Stocks.Services.Parsers;
 
 namespace Stocks.Console;
 
 public class Client
 {
-    static readonly HttpClient _client = new();
-    private const string FILE_DIRECTORY = ".";
-    private const string FILE_FORMAT = "dd_MM_yyyy";
-    private const string FILE_EXTENSION = ".csv";
+    private readonly Download _download;
+    private readonly IFileService _dateFileService;
+    private readonly IParser _parser;
+    private readonly IHoldingsDifferenceService _differenceService;
+    private readonly Settings _settings;
 
-    public Client()
+    public Client(Download download,
+        IFileService dateFileService,
+        IParser parser,
+        IHoldingsDifferenceService differenceService,
+        IConfiguration configuration)
     {
-        
+        _download = download;
+        _dateFileService = dateFileService;
+        _parser = parser;
+        _differenceService = differenceService;
+
+        _settings = Settings.Get(configuration);
     }
-    private async Task RunAsync()
+    public async Task RunAsync()
     {
-        var download = new Download(_client);
-        var urlPath = "https://ark-funds.com/wp-content/uploads/funds-etf-csv/ARK_INNOVATION_ETF_ARKK_HOLDINGS.csv";
-        var csv = await download.GetEtfHoldingsCsv(urlPath);
+        var csv = await _download.GetEtfHoldingsCsv(_settings.CsvUrl);
         if (string.IsNullOrEmpty(csv))
         {
             return;
         }
         System.Console.WriteLine(csv);
-        var fileService = new DateFileService(FILE_DIRECTORY, FILE_FORMAT, FILE_EXTENSION);
-        await fileService.SaveContent(csv);
+        await _dateFileService.SaveContent(csv);
 
-        var loadedCsv = await fileService.LoadLastAvailableContent();
+        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
+        string pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
 
-        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, FILE_FORMAT, FILE_DIRECTORY, FILE_EXTENSION);
-        string pathToOlderFile = fileService.GetLastAvailableFilePath();
+        var recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
+        var pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
 
-        var parser = new CsvParser();
-        var recentHoldings = await parser.GetStocksAsync(pathToRecentFile);
-        var pastHoldings = await parser.GetStocksAsync(pathToOlderFile);
-
-        var diffService = new HoldingsDifferenceService();
-        var diffResult = diffService.GetDifference(recentHoldings, pastHoldings);
+        var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
         
         PrintResultToConsole(diffResult);
     }
@@ -67,7 +72,7 @@ public class Client
         }
     }
 
-    public void RunClient()
+    public void Run()
     {
         RunAsync().GetAwaiter().GetResult();
     }
