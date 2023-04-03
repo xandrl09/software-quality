@@ -3,7 +3,7 @@ using Stocks.Services.Models.Configuration;
 
 namespace Stocks.Services.Client;
 
-public class DownloadService: IDownloadService
+public class DownloadService : IDownloadService
 {
     private HttpClient _client;
     private readonly Settings _settings;
@@ -31,12 +31,11 @@ public class DownloadService: IDownloadService
 
         var requestMessage = CreateGetRequestMessage(path);
         HttpResponseMessage responseMessage = await _client.SendAsync(requestMessage);
-        
+
         if (responseMessage.IsSuccessStatusCode)
         {
             csv = await responseMessage.Content.ReadAsStringAsync();
         }
         return csv;
     }
-
 }

@@ -2,7 +2,7 @@
 
 namespace Stocks.Services.Models
 {
-    public class StockModelMap: ClassMap<StockModel>
+    public class StockModelMap : ClassMap<StockModel>
     {
         public StockModelMap()
         {

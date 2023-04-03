@@ -2,13 +2,13 @@
 {
     public static class PathHelper
     {
-        public static string FormatDateTime(DateTime date, 
+        public static string FormatDateTime(DateTime date,
             string format)
         {
             return string.Format("{0:" + format + "}", date);
         }
 
-        public static string GetDateFilePath (DateTime date,
+        public static string GetDateFilePath(DateTime date,
             string format,
             string directory,
             string extension)
