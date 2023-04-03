@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Stocks.Services.Models.Configuration;
-using System.IO;
 
 namespace Stocks.Services.Client;
 

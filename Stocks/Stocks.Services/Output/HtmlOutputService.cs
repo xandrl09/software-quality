@@ -1,16 +1,9 @@
 ﻿using HtmlBuilders;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
 using Stocks.Services.Helpers;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Stocks.Services.Output
 {
