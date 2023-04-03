@@ -5,7 +5,7 @@ namespace Stocks.Services.Client;
 
 public class DownloadService : IDownloadService
 {
-    private HttpClient _client;
+    private readonly HttpClient _client;
     private readonly Settings _settings;
 
     public DownloadService(IConfiguration configuration)
