@@ -14,17 +14,6 @@ public class DownloadService : IDownloadService
         _client = new HttpClient();
     }
 
-    private HttpRequestMessage CreateGetRequestMessage(string url)
-    {
-        var request = new HttpRequestMessage()
-        {
-            RequestUri = new Uri(url),
-            Method = HttpMethod.Get
-        };
-        request.Headers.Add("User-Agent", _settings.UserAgent);
-        return request;
-    }
-
     public async Task<string?> DownloadFile(string path)
     {
         string? csv = null;
@@ -37,5 +26,16 @@ public class DownloadService : IDownloadService
             csv = await responseMessage.Content.ReadAsStringAsync();
         }
         return csv;
+    }
+
+    private HttpRequestMessage CreateGetRequestMessage(string url)
+    {
+        var request = new HttpRequestMessage()
+        {
+            RequestUri = new Uri(url),
+            Method = HttpMethod.Get
+        };
+        request.Headers.Add("User-Agent", _settings.UserAgent);
+        return request;
     }
 }

@@ -35,6 +35,11 @@ public class Client
         _settings = Settings.Get(configuration);
     }
 
+    public void Run()
+    {
+        RunAsync().GetAwaiter().GetResult();
+    }
+
     public async Task RunAsync()
     {
         var csv = await _download.DownloadFile(_settings.CsvUrl);
@@ -77,10 +82,5 @@ public class Client
         {
             System.Console.WriteLine($"{reducedPosition.Ticker}, {reducedPosition.CompanyName}, {reducedPosition.DifferenceInShares}({reducedPosition.PercentageDifferenceInShares}%), {reducedPosition.Weight}");
         }
-    }
-
-    public void Run()
-    {
-        RunAsync().GetAwaiter().GetResult();
     }
 }
