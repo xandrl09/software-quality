@@ -12,8 +12,8 @@ public class HoldingsDifferenceTests
     {
         _holdingsDifferenceService = new HoldingsDifferenceService();
         _oldReport = new List<StockModel> {
-            new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "50%" },
-            new StockModel { Ticker = "GOOG", Company = "Google", Shares = 10, Weight = "50%" },
+            new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "50%" },
+            new StockModel { Cusip = "38259P706", Ticker = "GOOG", Company = "Google", Shares = 10, Weight = "50%" },
         };
     }
 
@@ -22,9 +22,9 @@ public class HoldingsDifferenceTests
     {
         // arrange
         var newReport = new List<StockModel> {
-            new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "25%" },
-            new StockModel { Ticker = "GOOG", Company = "Google", Shares = 10, Weight = "25%" },
-            new StockModel { Ticker = "TSLA", Company = "Tesla", Shares = 20, Weight = "50%" }
+            new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "25%" },
+            new StockModel { Cusip = "38259P706", Ticker = "GOOG", Company = "Google", Shares = 10, Weight = "25%" },
+            new StockModel { Cusip = "88160R101", Ticker = "TSLA", Company = "Tesla", Shares = 20, Weight = "50%" }
         };
 
         // act
@@ -48,8 +48,8 @@ public class HoldingsDifferenceTests
     {
         // arrange
         var newReport = new List<StockModel> {
-            new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "10%" },
-            new StockModel { Ticker = "GOOG", Company = "Google", Shares = 90, Weight = "90%" },
+            new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "10%" },
+            new StockModel { Cusip = "38259P706", Ticker = "GOOG", Company = "Google", Shares = 90, Weight = "90%" },
         };
 
         // act
@@ -74,8 +74,8 @@ public class HoldingsDifferenceTests
     {
         // arrange
         var newReport = new List<StockModel> {
-            new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "83%" },
-            new StockModel { Ticker = "GOOG", Company = "Google", Shares = 2, Weight = "17%" },
+            new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "83%" },
+            new StockModel { Cusip = "38259P706", Ticker = "GOOG", Company = "Google", Shares = 2, Weight = "17%" },
         };
 
         // act
@@ -100,7 +100,7 @@ public class HoldingsDifferenceTests
     {
         // arrange
         var newReport = new List<StockModel> {
-            new StockModel { Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "83%" }
+            new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 10, Weight = "83%" }
         };
 
         // act
