@@ -4,23 +4,25 @@ namespace Stocks.Services.Diff
 {
     public class HoldingsDifferenceService : IHoldingsDifferenceService
     {
-        public HoldingsDifferenceModel GetDifference(IEnumerable<StockModel> actualHoldings, IEnumerable<StockModel> pastHoldings)
+        public HoldingsDifferenceModel GetDifference(IEnumerable<StockModel> actualHoldings,
+            IEnumerable<StockModel> pastHoldings)
         {
             var result = new HoldingsDifferenceModel();
             var overlappingPositions = GetOverlappingPositions(actualHoldings, pastHoldings);
-            result.NewPositions = GetNewPositons(actualHoldings, overlappingPositions);
-            result.IncreasedPositons = GetIncreasedPositons(overlappingPositions);
+            result.NewPositions = GetNewPositions(actualHoldings, overlappingPositions);
+            result.IncreasedPositons = GetIncreasedPositions(overlappingPositions);
             result.ReducedPositions = GetReducedPositions(overlappingPositions).Concat(GetReducedToZeroPositions(pastHoldings, overlappingPositions));
 
             return result;
         }
 
-        private IEnumerable<StockModel> GetNewPositons(IEnumerable<StockModel> actualHoldings, IEnumerable<StockDifferenceModel> overlap)
+        private IEnumerable<StockModel> GetNewPositions(IEnumerable<StockModel> actualHoldings,
+            IEnumerable<StockDifferenceModel> overlap)
         {
-            return actualHoldings.Where(actual => !overlap.Any(past => past.Ticker == actual.Ticker));
+            return actualHoldings.Where(actual => overlap.All(past => past.Ticker != actual.Ticker));
         }
 
-        private IEnumerable<StockDifferenceModel> GetIncreasedPositons(IEnumerable<StockDifferenceModel> overlap)
+        private IEnumerable<StockDifferenceModel> GetIncreasedPositions(IEnumerable<StockDifferenceModel> overlap)
         {
             return overlap.Where(actual => actual.DifferenceInShares > 0);
         }
@@ -30,10 +32,11 @@ namespace Stocks.Services.Diff
             return overlap.Where(actual => actual.DifferenceInShares < 0);
         }
 
-        private IEnumerable<StockDifferenceModel> GetReducedToZeroPositions(IEnumerable<StockModel> pastHoldings, IEnumerable<StockDifferenceModel> overlap)
+        private IEnumerable<StockDifferenceModel> GetReducedToZeroPositions(IEnumerable<StockModel> pastHoldings,
+            IEnumerable<StockDifferenceModel> overlap)
         {
             return pastHoldings
-                .Where(past => !overlap.Any(actual => actual.Ticker == past.Ticker))
+                .Where(past => overlap.All(actual => actual.Cusip != past.Cusip))
                 .Select(past => new StockDifferenceModel
                 {
                     Ticker = past.Ticker,
@@ -41,30 +44,33 @@ namespace Stocks.Services.Diff
                     DifferenceInShares = -past.Shares,
                     PercentageDifferenceInShares = -100,
                     Weight = "0%",
+                    Cusip = past.Cusip,
                 });
         }
 
-        private IEnumerable<StockDifferenceModel> GetOverlappingPositions(IEnumerable<StockModel> actualHoldings, IEnumerable<StockModel> pastHoldings)
+        private IEnumerable<StockDifferenceModel> GetOverlappingPositions(IEnumerable<StockModel> actualHoldings,
+            IEnumerable<StockModel> pastHoldings)
         {
             return pastHoldings.Join(
                 actualHoldings,
-                past => past.Ticker,
-                actual => actual.Ticker,
+                past => past.Cusip,
+                actual => actual.Cusip,
                 (past, actual) => new StockDifferenceModel
                 {
                     Ticker = actual.Ticker,
                     CompanyName = actual.Company,
                     DifferenceInShares = actual.Shares - past.Shares,
-                    PercentageDifferenceInShares = CalculatePercentualDifference(actual.Shares, past.Shares),
+                    PercentageDifferenceInShares = CalculatePercentageDifference(actual.Shares, past.Shares),
                     Weight = actual.Weight,
+                    Cusip = actual.Cusip,
                 });
         }
 
-        private double CalculatePercentualDifference(double newValue, double oldValue)
+        private double CalculatePercentageDifference(double newValue, double oldValue)
         {
-            double percentualDifference = ((newValue - oldValue) / oldValue) * 100;
+            var percentageDifference = ((newValue - oldValue) / oldValue) * 100;
 
-            return Math.Round(percentualDifference, 2);
+            return Math.Round(percentageDifference, 2);
         }
     }
 }

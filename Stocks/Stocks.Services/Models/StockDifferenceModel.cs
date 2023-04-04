@@ -9,5 +9,6 @@ namespace Stocks.Services.Models
         public int DifferenceInShares { get; set; }
         public double PercentageDifferenceInShares { get; set; }
         public string Weight { get; set; }
+        public string Cusip { get; set; }
     }
 }

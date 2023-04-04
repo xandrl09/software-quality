@@ -18,6 +18,7 @@ namespace Stocks.Services.Models
                 return int.Parse(args.Row.GetField("shares").Replace(",", ""));
             });
             Map(m => m.Weight).Name("weight (%)");
+            Map(m => m.Cusip).Name("cusip");
         }
     }
 }

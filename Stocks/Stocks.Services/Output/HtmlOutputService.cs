@@ -68,16 +68,21 @@ namespace Stocks.Services.Output
 
             foreach (var prop in props)
             {
+                if (prop.Name == nameof(StockModel.Cusip)) continue;
+
                 headerRow = headerRow.Append(new HtmlTag("th").Append(prop.Name));
             }
+
             table = table.Append(headerRow);
 
-            foreach(var diff in differences)
+            foreach (var diff in differences)
             {
                 var row = new HtmlTag("tr");
 
                 foreach (var prop in props)
                 {
+                    if (prop.Name == nameof(StockModel.Cusip)) continue;
+
                     var val = prop.GetValue(diff)?.ToString() ?? "";
                     row = row.Append(new HtmlTag("td").Append(val));
                 }
@@ -92,7 +97,7 @@ namespace Stocks.Services.Output
 
         private string GetDestinationFilename(string destination)
         {
-            string filename = $"diff_{PathHelper.FormatDateTime(DateTime.Today, _settings.FileNameFormat)}.html";
+            var filename = $"diff_{PathHelper.FormatDateTime(DateTime.Today, _settings.FileNameFormat)}.html";
             return Path.Combine(destination, filename);
         }
 
@@ -114,7 +119,7 @@ namespace Stocks.Services.Output
 
             html = html.Append(body);
 
-            using StreamWriter streamWriter = new StreamWriter(GetDestinationFilename(destination));
+            await using var streamWriter = new StreamWriter(GetDestinationFilename(destination));
 
             html.WriteTo(streamWriter, HtmlEncoder.Default);
         }
