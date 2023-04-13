@@ -11,7 +11,8 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
         builder.SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile("appsettings.json", optional: false);
     })
-    .ConfigureServices(services => {
+    .ConfigureServices(services =>
+    {
         services.AddTransient<Client>();
         RegisterServices.Register(services);
     });
@@ -20,4 +21,3 @@ using IHost host = hostBuilder.Build();
 
 var client = host.Services.GetService<Client>();
 await client.RunAsync();
-

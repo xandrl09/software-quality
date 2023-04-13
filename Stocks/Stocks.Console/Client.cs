@@ -34,6 +34,12 @@ public class Client
 
         _settings = Settings.Get(configuration);
     }
+
+    public void Run()
+    {
+        RunAsync().GetAwaiter().GetResult();
+    }
+
     public async Task RunAsync()
     {
         var csv = await _download.DownloadFile(_settings.CsvUrl);
@@ -51,7 +57,7 @@ public class Client
         var pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
 
         var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
-        
+
         PrintResultToConsole(diffResult);
 
         await _outputService.Output(diffResult, _settings.SaveDirectory);
@@ -60,7 +66,7 @@ public class Client
     private void PrintResultToConsole(HoldingsDifferenceModel diffResult)
     {
         System.Console.WriteLine("New positions:");
-        foreach(var newPositon in diffResult.NewPositions)
+        foreach (var newPositon in diffResult.NewPositions)
         {
             System.Console.WriteLine($"{newPositon.Ticker}, {newPositon.Company}, {newPositon.Shares}, {newPositon.Weight}");
         }
@@ -76,10 +82,5 @@ public class Client
         {
             System.Console.WriteLine($"{reducedPosition.Ticker}, {reducedPosition.CompanyName}, {reducedPosition.DifferenceInShares}({reducedPosition.PercentageDifferenceInShares}%), {reducedPosition.Weight}");
         }
-    }
-
-    public void Run()
-    {
-        RunAsync().GetAwaiter().GetResult();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Stocks.Services.Models
+﻿namespace Stocks.Services.Models
 {
     public class StockDifferenceModel
     {

@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Stocks.Services.Client;
 using Stocks.Services.Diff;
 using Stocks.Services.Files;
-using Stocks.Services.Client;
-using Stocks.Services.Parsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Stocks.Services.Output;
+using Stocks.Services.Parsers;
 
 namespace Stocks.Services
 {

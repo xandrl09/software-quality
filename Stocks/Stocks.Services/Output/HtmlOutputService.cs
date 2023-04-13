@@ -1,16 +1,9 @@
 ﻿using HtmlBuilders;
 using Microsoft.Extensions.Configuration;
-using Microsoft.VisualBasic;
 using Stocks.Services.Helpers;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace Stocks.Services.Output
 {
@@ -21,6 +14,29 @@ namespace Stocks.Services.Output
         public HtmlOutputService(IConfiguration configuration)
         {
             _settings = Settings.Get(configuration);
+        }
+
+        public async Task Output(HoldingsDifferenceModel differences, string destination)
+        {
+            var html = CreateHtml();
+            html = html.Append(CreateHead());
+
+            var body = CreateBody();
+
+            var contents = new HtmlTag("div");
+
+            contents = contents.Append(CreateHeader());
+            contents = contents.Append(CreateTable("New positions", differences.NewPositions));
+            contents = contents.Append(CreateTable("Increased positions", differences.IncreasedPositons));
+            contents = contents.Append(CreateTable("Reduced positions", differences.ReducedPositions));
+
+            body = body.Append(contents);
+
+            html = html.Append(body);
+
+            await using var streamWriter = new StreamWriter(GetDestinationFilename(destination));
+
+            html.WriteTo(streamWriter, HtmlEncoder.Default);
         }
 
         private HtmlTag CreateHtml()
@@ -99,29 +115,6 @@ namespace Stocks.Services.Output
         {
             var filename = $"diff_{PathHelper.FormatDateTime(DateTime.Today, _settings.FileNameFormat)}.html";
             return Path.Combine(destination, filename);
-        }
-
-        public async Task Output(HoldingsDifferenceModel differences, string destination)
-        {
-            var html = CreateHtml();
-            html = html.Append(CreateHead());
-
-            var body = CreateBody();
-
-            var contents = new HtmlTag("div");
-
-            contents = contents.Append(CreateHeader());
-            contents = contents.Append(CreateTable("New positions", differences.NewPositions));
-            contents = contents.Append(CreateTable("Increased positions", differences.IncreasedPositons));
-            contents = contents.Append(CreateTable("Reduced positions", differences.ReducedPositions));
-
-            body = body.Append(contents);
-
-            html = html.Append(body);
-
-            await using var streamWriter = new StreamWriter(GetDestinationFilename(destination));
-
-            html.WriteTo(streamWriter, HtmlEncoder.Default);
         }
     }
 }

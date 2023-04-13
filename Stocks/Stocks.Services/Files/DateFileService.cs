@@ -14,20 +14,10 @@ public class DateFileService : IFileService
         _settings = Settings.Get(configuration);
     }
 
-    private string GetPathByDate(DateTime date)
-    {
-        return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
-    }
-
     public async Task SaveContent(string content)
     {
         string path = GetPathByDate(DateTime.Today);
         await File.WriteAllTextAsync(path, content);
-    }
-
-    private async Task<string> LoadContent(string path)
-    {
-        return await File.ReadAllTextAsync(path);
     }
 
     public async Task<string> LoadContent(DateTime date)
@@ -35,11 +25,6 @@ public class DateFileService : IFileService
         string path = GetPathByDate(date);
         string content = await LoadContent(path);
         return content;
-    }
-
-    private DateTime ParseFileName(string fileName)
-    {
-        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _settings.FileNameFormat, provider: CultureInfo.CurrentCulture);
     }
 
     public async Task<string> LoadLastAvailableContent()
@@ -57,5 +42,20 @@ public class DateFileService : IFileService
             .Skip(1)
             .FirstOrDefault()
             .Value;
+    }
+
+    private string GetPathByDate(DateTime date)
+    {
+        return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
+    }
+
+    private async Task<string> LoadContent(string path)
+    {
+        return await File.ReadAllTextAsync(path);
+    }
+
+    private DateTime ParseFileName(string fileName)
+    {
+        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _settings.FileNameFormat, provider: CultureInfo.CurrentCulture);
     }
 }

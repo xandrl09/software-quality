@@ -4,6 +4,8 @@ namespace Stocks.Services.Diff
 {
     public class HoldingsDifferenceService : IHoldingsDifferenceService
     {
+        private const int NO_DIFFERENCE_IN_SHARES = 0;
+
         public HoldingsDifferenceModel GetDifference(IEnumerable<StockModel> actualHoldings,
             IEnumerable<StockModel> pastHoldings)
         {
@@ -24,17 +26,20 @@ namespace Stocks.Services.Diff
 
         private IEnumerable<StockDifferenceModel> GetIncreasedPositions(IEnumerable<StockDifferenceModel> overlap)
         {
-            return overlap.Where(actual => actual.DifferenceInShares > 0);
+            return overlap.Where(actual => actual.DifferenceInShares > NO_DIFFERENCE_IN_SHARES);
         }
 
         private IEnumerable<StockDifferenceModel> GetReducedPositions(IEnumerable<StockDifferenceModel> overlap)
         {
-            return overlap.Where(actual => actual.DifferenceInShares < 0);
+            return overlap.Where(actual => actual.DifferenceInShares < NO_DIFFERENCE_IN_SHARES);
         }
 
         private IEnumerable<StockDifferenceModel> GetReducedToZeroPositions(IEnumerable<StockModel> pastHoldings,
             IEnumerable<StockDifferenceModel> overlap)
         {
+            const int MAXIMAL_NEGATIVE_PERCENTAGE_DIFFERENCE = -100;
+            const string MINIMAL_PERCENTAGE_WEIGHT = "0%";
+
             return pastHoldings
                 .Where(past => overlap.All(actual => actual.Cusip != past.Cusip))
                 .Select(past => new StockDifferenceModel
@@ -42,8 +47,8 @@ namespace Stocks.Services.Diff
                     Ticker = past.Ticker,
                     CompanyName = past.Company,
                     DifferenceInShares = -past.Shares,
-                    PercentageDifferenceInShares = -100,
-                    Weight = "0%",
+                    PercentageDifferenceInShares = MAXIMAL_NEGATIVE_PERCENTAGE_DIFFERENCE,
+                    Weight = MINIMAL_PERCENTAGE_WEIGHT,
                     Cusip = past.Cusip,
                 });
         }
@@ -68,9 +73,12 @@ namespace Stocks.Services.Diff
 
         private double CalculatePercentageDifference(double newValue, double oldValue)
         {
-            var percentageDifference = ((newValue - oldValue) / oldValue) * 100;
+            const int HUNDRED_PERCENT = 100;
+            const int NUMBER_OF_DECIMAL_PLACES = 2;
 
-            return Math.Round(percentageDifference, 2);
+            var percentageDifference = ((newValue - oldValue) / oldValue) * HUNDRED_PERCENT;
+
+            return Math.Round(percentageDifference, NUMBER_OF_DECIMAL_PLACES);
         }
     }
 }

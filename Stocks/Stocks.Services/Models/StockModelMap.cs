@@ -1,13 +1,8 @@
 ﻿using CsvHelper.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stocks.Services.Models
 {
-    public class StockModelMap: ClassMap<StockModel>
+    public class StockModelMap : ClassMap<StockModel>
     {
         public StockModelMap()
         {
