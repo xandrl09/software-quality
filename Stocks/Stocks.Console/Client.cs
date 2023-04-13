@@ -3,6 +3,7 @@ using Stocks.Services.Diff;
 using Stocks.Services.Files;
 using Stocks.Services.Helpers;
 using Stocks.Services.Client;
+using Stocks.Services.Exceptions;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
 using Stocks.Services.Parsers;
@@ -42,11 +43,23 @@ public class Client
 
     public async Task RunAsync()
     {
-        var csv = await _download.DownloadFile(_settings.CsvUrl);
-        if (string.IsNullOrEmpty(csv))
+        string? csv;
+        try
         {
+            csv = await _download.DownloadFile(_settings.CsvUrl);
+        }
+        catch (InvalidDownloadException e)
+        {
+            System.Console.WriteLine(e);
             return;
         }
+        
+        if (string.IsNullOrEmpty(csv))
+        {
+            System.Console.WriteLine("Downloaded csv file is empty.");
+            return;
+        }
+        
         System.Console.WriteLine(csv);
         await _dateFileService.SaveContent(csv);
 
