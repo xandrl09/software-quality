@@ -64,7 +64,17 @@ public class Client
         await _dateFileService.SaveContent(csv);
 
         string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
-        string pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
+        string pathToOlderFile;
+        try
+        {
+            pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
+        }
+        catch (CsvFilePathNotFoundException e)
+        {
+            System.Console.WriteLine(e);
+            return;
+        }
+        // string pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
 
         var recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
         var pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);

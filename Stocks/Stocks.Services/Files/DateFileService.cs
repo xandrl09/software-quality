@@ -2,6 +2,7 @@
 using Stocks.Services.Helpers;
 using Stocks.Services.Models.Configuration;
 using System.Globalization;
+using Stocks.Services.Exceptions;
 
 namespace Stocks.Services.Files;
 
@@ -36,17 +37,25 @@ public class DateFileService : IFileService
     {
         var availableFileNames = Directory.GetFiles(_settings.SaveDirectory, $"*{_settings.FileExtension}");
 
-        return availableFileNames
+        var lastKnownFile = availableFileNames
             .Select(x => new KeyValuePair<DateTime, string>(ParseFileName(x), x))
             .OrderByDescending(x => x.Key)
             .Skip(1)
             .FirstOrDefault()
             .Value;
+
+        if (lastKnownFile == null)
+        {
+            throw new CsvFilePathNotFoundException();
+        }
+
+        return lastKnownFile;
     }
 
     private string GetPathByDate(DateTime date)
     {
-        return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
+        return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory,
+            _settings.FileExtension);
     }
 
     private async Task<string> LoadContent(string path)
@@ -56,6 +65,7 @@ public class DateFileService : IFileService
 
     private DateTime ParseFileName(string fileName)
     {
-        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _settings.FileNameFormat, provider: CultureInfo.CurrentCulture);
+        return DateTime.ParseExact(s: Path.GetFileNameWithoutExtension(fileName), format: _settings.FileNameFormat,
+            provider: CultureInfo.CurrentCulture);
     }
 }
