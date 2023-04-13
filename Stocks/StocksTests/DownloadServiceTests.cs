@@ -5,29 +5,18 @@ namespace Stocks.Services.Client;
 
 public class DownloadServiceTests
 {
-    private DownloadService _downloadService;
+    private IDownloadService _downloadService;
 
-    [Test]
-    public void DownloadService_NoConnection_ThrowsCustomException()
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
-        // arrange
-        
-
-        // act
-
-        // assert
-        
+        _downloadService = A.Fake<IDownloadService>();
     }
 
     [Test]
-    public void DownloadService_NotDownloadedStocks_ThrowsCustomException()
+    public async Task DownloadService_NotDownloaded_ThrowsCustomException()
     {
-        // arrange
-
-
-        // act
-
-        // assert
-
+        A.CallTo(() => _downloadService.DownloadFile("invalid_path")).Throws<InvalidTimeZoneException>();
+        
     }
 }

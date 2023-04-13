@@ -1,4 +1,5 @@
-﻿using Stocks.Services.Models;
+﻿using FakeItEasy;
+using Stocks.Services.Models;
 
 namespace Stocks.Services.Diff;
 
@@ -133,5 +134,21 @@ public class HoldingsDifferenceTests
             Assert.That(result.ReducedPositions.FirstOrDefault()?.PercentageDifferenceInShares, Is.EqualTo(-100));
             Assert.That(result.ReducedPositions.FirstOrDefault()?.Weight, Is.EqualTo("0%"));
         });
+    }
+
+    [Test]
+    public void GetDifference_FakeItEasy_FunctionCalled()
+    {
+        // arrange
+        var fakeDifferenceService = A.Fake<IHoldingsDifferenceService>();
+        var fakeStock = A.Fake<List<StockModel>>();
+        fakeStock.Add(A.Fake<StockModel>());
+
+        // act
+        fakeDifferenceService.GetDifference(fakeStock, _oldReport);
+
+        // assert
+        A.CallTo(() => fakeDifferenceService.GetDifference(fakeStock, _oldReport)).MustHaveHappened();
+
     }
 }
