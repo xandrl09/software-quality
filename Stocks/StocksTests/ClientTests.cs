@@ -30,7 +30,11 @@ public class ClientTests
         _parser = A.Fake<IParseService>();
         _differenceService = A.Fake<IHoldingsDifferenceService>();
         _outputService = A.Fake<IOutputService>();
-        _configuration = A.Fake<IConfiguration>();
+        _configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json")
+            .Build();
+        
         _settings = new Settings();
         _settings.CsvUrl = "invalid_path";
         _settings.SaveDirectory= ".";
