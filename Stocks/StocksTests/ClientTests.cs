@@ -14,12 +14,12 @@ namespace StocksTests;
 
 public class ClientTests
 {
-    private  IDownloadService _download;
-    private  IFileService _dateFileService;
-    private  IParseService _parser;
-    private  IHoldingsDifferenceService _differenceService;
-    private  IOutputService _outputService;
-    private  IConfiguration _configuration;
+    private IDownloadService _download;
+    private IFileService _dateFileService;
+    private IParseService _parser;
+    private IHoldingsDifferenceService _differenceService;
+    private IOutputService _outputService;
+    private IConfiguration _configuration;
     private Settings _settings;
 
     [OneTimeSetUp]
@@ -34,26 +34,45 @@ public class ClientTests
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
             .Build();
-        
+
         _settings = new Settings();
         _settings.CsvUrl = "https://ark-funds.com/wp-content/uploads/funds-etf-csv/ARK_INNOVATION_ETF_ARKK_HOLDINGS.csv";
-        _settings.SaveDirectory= ".";
-        _settings.FileExtension=".csv";
+        _settings.SaveDirectory = ".";
+        _settings.FileExtension = ".csv";
         _settings.FileNameFormat = "dd_MM_yyyy";
         _settings.UserAgent = "StockService/1.0";
     }
-    
+
     [Test]
     public async Task Client_RunAsync_DownloadServiceThrowsException()
     {
-        
+        // arrange
         A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Throws<InvalidDownloadException>();
         var consoleOutput = new StringWriter();
         Console.SetOut(consoleOutput);
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
-        // Assert.Throws<InvalidDownloadException>(() => client.Run());
+        
+        // act
         client.Run();
+
+        // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
 
+    }
+
+    [Test]
+    public async Task Client_RunAsync_DownloadsEmptyFile()
+    {
+        // arrange
+        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns("");
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+        var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
+
+        // act
+        client.Run();
+
+        // assert
+        Assert.AreEqual(consoleOutput.ToString(), "Downloaded csv file is empty.\r\n");
     }
 }
