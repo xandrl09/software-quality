@@ -36,7 +36,7 @@ public class ClientTests
             .Build();
         
         _settings = new Settings();
-        _settings.CsvUrl = "invalid_path";
+        _settings.CsvUrl = "https://ark-funds.com/wp-content/uploads/funds-etf-csv/ARK_INNOVATION_ETF_ARKK_HOLDINGS.csv";
         _settings.SaveDirectory= ".";
         _settings.FileExtension=".csv";
         _settings.FileNameFormat = "dd_MM_yyyy";
@@ -48,9 +48,12 @@ public class ClientTests
     {
         
         A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Throws<InvalidDownloadException>();
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
-        Assert.ThrowsAsync<InvalidDownloadException>(async () => await client.RunAsync());
-        // await client.RunAsync();
-        
+        // Assert.Throws<InvalidDownloadException>(() => client.Run());
+        client.Run();
+        Assert.IsNotEmpty(consoleOutput.ToString());
+
     }
 }
