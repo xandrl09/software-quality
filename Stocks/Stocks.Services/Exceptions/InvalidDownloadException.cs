@@ -3,17 +3,17 @@ namespace Stocks.Services.Exceptions;
 public class InvalidDownloadException : Exception
 {
     public InvalidDownloadException() : base(
-        "Could not download file from API. Check your internet connection and try again.")
+        ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload))
     {
     }
 
     public InvalidDownloadException(string message) : base(
-        "Could not download file from API. Check your internet connection and try again.")
+        ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload))
     {
     }
 
     public InvalidDownloadException(string message, Exception innerException) : base(
-        "Could not download file from API. Check your internet connection and try again.", innerException)
+        ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload), innerException)
     {
     }
 }

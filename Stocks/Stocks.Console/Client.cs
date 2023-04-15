@@ -56,7 +56,7 @@ public class Client
         
         if (string.IsNullOrEmpty(csv))
         {
-            System.Console.WriteLine("Downloaded csv file is empty.");
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
             return;
         }
         

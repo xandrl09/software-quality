@@ -57,6 +57,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
+        Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload));
 
     }
 
@@ -73,6 +74,28 @@ public class ClientTests
         client.Run();
 
         // assert
-        Assert.AreEqual(consoleOutput.ToString(), "Downloaded csv file is empty.\r\n");
+        Assert.IsNotEmpty(consoleOutput.ToString());
+        Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
     }
+    
+
+    [Test]
+    public async Task Client_RunAsync_DateFileServiceThrowsException()
+    {
+        // arrange
+        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns(" ");
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Throws<CsvFilePathNotFoundException>();
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+        var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
+
+        // act
+        client.Run();
+
+        // assert
+        Assert.IsNotEmpty(consoleOutput.ToString());
+        Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.CsvFilePathNotFound));
+
+    }
+
 }
