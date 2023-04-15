@@ -50,7 +50,7 @@ public class Client
         }
         catch (InvalidDownloadException e)
         {
-            System.Console.WriteLine(e);
+            System.Console.WriteLine(e.Message);
             return;
         }
         
@@ -71,7 +71,7 @@ public class Client
         }
         catch (CsvFilePathNotFoundException e)
         {
-            System.Console.WriteLine(e);
+            System.Console.WriteLine(e.Message);
             return;
         }
         // string pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
