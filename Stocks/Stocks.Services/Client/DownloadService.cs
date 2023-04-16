@@ -31,7 +31,7 @@ public class DownloadService : IDownloadService
             csv = await responseMessage.Content.ReadAsStringAsync();
             return csv;
         }
-        catch (Exception e)
+        catch (Exception )
         {
             throw new InvalidDownloadException();
         }

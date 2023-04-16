@@ -53,23 +53,25 @@ public class Client
             System.Console.WriteLine(e.Message);
             return;
         }
-        
+
         if (string.IsNullOrEmpty(csv))
         {
             System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
             return;
         }
-        
+
         try
         {
             await _dateFileService.SaveContent(csv);
         }
-        catch (IOException e)
+        catch (IOException)
         {
             System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
             return;
         }
-        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
+
+        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
+            _settings.SaveDirectory, _settings.FileExtension);
         string pathToOlderFile;
         try
         {
@@ -85,10 +87,10 @@ public class Client
         IEnumerable<StockModel> pastHoldings;
         try
         {
-             recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
-             pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+            recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
+            pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
         }
-        catch (MissingFieldException e)
+        catch (MissingFieldException)
         {
             System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException));
             return;
@@ -106,19 +108,22 @@ public class Client
         System.Console.WriteLine("New positions:");
         foreach (var newPositon in diffResult.NewPositions)
         {
-            System.Console.WriteLine($"{newPositon.Ticker}, {newPositon.Company}, {newPositon.Shares}, {newPositon.Weight}");
+            System.Console.WriteLine(
+                $"{newPositon.Ticker}, {newPositon.Company}, {newPositon.Shares}, {newPositon.Weight}");
         }
 
         System.Console.WriteLine("Increased positions:");
         foreach (var increasedPositon in diffResult.IncreasedPositons)
         {
-            System.Console.WriteLine($"{increasedPositon.Ticker}, {increasedPositon.CompanyName}, {increasedPositon.DifferenceInShares}({increasedPositon.PercentageDifferenceInShares}%), {increasedPositon.Weight}");
+            System.Console.WriteLine(
+                $"{increasedPositon.Ticker}, {increasedPositon.CompanyName}, {increasedPositon.DifferenceInShares}({increasedPositon.PercentageDifferenceInShares}%), {increasedPositon.Weight}");
         }
 
         System.Console.WriteLine("Reduced positions:");
         foreach (var reducedPosition in diffResult.ReducedPositions)
         {
-            System.Console.WriteLine($"{reducedPosition.Ticker}, {reducedPosition.CompanyName}, {reducedPosition.DifferenceInShares}({reducedPosition.PercentageDifferenceInShares}%), {reducedPosition.Weight}");
+            System.Console.WriteLine(
+                $"{reducedPosition.Ticker}, {reducedPosition.CompanyName}, {reducedPosition.DifferenceInShares}({reducedPosition.PercentageDifferenceInShares}%), {reducedPosition.Weight}");
         }
     }
 }
