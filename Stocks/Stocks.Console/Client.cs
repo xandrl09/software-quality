@@ -80,10 +80,19 @@ public class Client
             System.Console.WriteLine(e.Message);
             return;
         }
-        // string pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
 
-        var recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
-        var pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+        IEnumerable<StockModel> recentHoldings;
+        IEnumerable<StockModel> pastHoldings;
+        try
+        {
+             recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
+             pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+        }
+        catch (MissingFieldException e)
+        {
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException));
+            return;
+        }
 
         var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
 

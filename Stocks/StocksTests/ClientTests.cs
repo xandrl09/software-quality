@@ -5,6 +5,7 @@ using Stocks.Services.Client;
 using Stocks.Services.Diff;
 using Stocks.Services.Exceptions;
 using Stocks.Services.Files;
+using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
 using Stocks.Services.Output;
 using Stocks.Services.Parsers;
@@ -53,8 +54,8 @@ public class ClientTests
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
         
         // act
-        client.Run();
-
+        // client.Run();
+        await client.RunAsync();
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
         Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload));
@@ -71,8 +72,8 @@ public class ClientTests
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
 
         // act
-        client.Run();
-
+        // client.Run();
+        await client.RunAsync();
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
         Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
@@ -91,8 +92,8 @@ public class ClientTests
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
 
         // act
-        client.Run();
-
+        // client.Run();
+        await client.RunAsync();
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
         Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.CsvFilePathNotFound));
@@ -109,11 +110,66 @@ public class ClientTests
         var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
 
         // act
-        client.Run();
-
+        // client.Run();
+        await client.RunAsync();
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
         Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
+
+    }
+    
+    [Test]
+    public async Task Client_RunAsync_ParserThrowsMissingFieldException()
+    {
+        // arrange
+        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns("valid csv");
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).DoesNothing();
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Returns("valid path");
+        A.CallTo(() => _parser.GetStocksAsync(A<string>.Ignored)).Throws<MissingFieldException>();
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+        var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
+    
+        // act
+        // client.Run();
+        await client.RunAsync();
+        // assert
+        Assert.IsNotEmpty(consoleOutput.ToString());
+        Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException));
+    
+    }
+    
+    [Test]
+    public async Task Client_RunAsync_SuccesfullyOutputsToConsole()
+    {
+        // arrange
+        
+        var stocksList = new List<StockModel>();
+        var stockModel = new StockModel { Cusip = "594918104", Ticker = "MSFT", Company = "Microsoft", Shares = 15, Weight = "15%" };
+        stocksList.Add(stockModel);
+        
+        HoldingsDifferenceModel model = new HoldingsDifferenceModel();
+        model.NewPositions = stocksList;
+        model.IncreasedPositons = new List<StockDifferenceModel>();
+        model.ReducedPositions = new List<StockDifferenceModel>();
+        
+        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns("valid csv");
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).DoesNothing();
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Returns("valid path");
+        A.CallTo(() => _parser.GetStocksAsync(A<string>.Ignored)).Returns(stocksList);
+        A.CallTo(() => _differenceService.GetDifference(A<IEnumerable<StockModel>>.Ignored, A<IEnumerable<StockModel>>.Ignored)).Returns(model);
+        
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+        var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
+
+        // act
+        await client.RunAsync();
+        
+        // assert
+        Assert.IsNotEmpty(consoleOutput.ToString());
+        StringAssert.Contains("Microsoft", consoleOutput.ToString().Trim());
+        // Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidCsvFile));
 
     }
 }
