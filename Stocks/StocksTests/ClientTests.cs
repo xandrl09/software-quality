@@ -84,6 +84,7 @@ public class ClientTests
     {
         // arrange
         A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns(" ");
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).DoesNothing();
         A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Throws<CsvFilePathNotFoundException>();
         var consoleOutput = new StringWriter();
         Console.SetOut(consoleOutput);
@@ -97,5 +98,22 @@ public class ClientTests
         Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.CsvFilePathNotFound));
 
     }
+    [Test]
+    public async Task Client_RunAsync_DateFileService_SaveContentThrowsException()
+    {
+        // arrange
+        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns("valid csv");
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).Throws<IOException>();
+        var consoleOutput = new StringWriter();
+        Console.SetOut(consoleOutput);
+        var client = new Client(_download, _dateFileService, _parser, _differenceService, _configuration, _outputService);
 
+        // act
+        client.Run();
+
+        // assert
+        Assert.IsNotEmpty(consoleOutput.ToString());
+        Assert.AreEqual(consoleOutput.ToString().Trim(), ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
+
+    }
 }

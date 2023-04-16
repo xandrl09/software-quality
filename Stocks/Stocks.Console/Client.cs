@@ -60,9 +60,15 @@ public class Client
             return;
         }
         
-        System.Console.WriteLine(csv);
-        await _dateFileService.SaveContent(csv);
-
+        try
+        {
+            await _dateFileService.SaveContent(csv);
+        }
+        catch (IOException e)
+        {
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
+            return;
+        }
         string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat, _settings.SaveDirectory, _settings.FileExtension);
         string pathToOlderFile;
         try

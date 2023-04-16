@@ -11,6 +11,7 @@ namespace Stocks.Services.Exceptions
         CsvFilePathNotFound,
         InvalidDownload,
         EmptyCsvFile,
+        IoException,
         UnknownException
     }
 
@@ -23,6 +24,7 @@ namespace Stocks.Services.Exceptions
                 {CustomExecption.CsvFilePathNotFound, "Could not find path to the last available csv file."},
                 {CustomExecption.InvalidDownload, "Could not download file from API. Check your internet connection and try again." },
                 {CustomExecption.EmptyCsvFile, "Downloaded csv file is empty."},
+                {CustomExecption.IoException , "AN I/O error occurred while opening the file."},
                 {CustomExecption.UnknownException, "Unknown Exception occured." }
             };
             return ExceptionsDictionary.GetValueOrDefault(e);
