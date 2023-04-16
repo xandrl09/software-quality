@@ -44,63 +44,58 @@ public class Client
     public async Task RunAsync()
     {
         string? csv;
-        try
-        {
+        try {
+
             csv = await _download.DownloadFile(_settings.CsvUrl);
-        }
-        catch (InvalidDownloadException e)
-        {
-            System.Console.WriteLine(e.Message);
-            return;
-        }
 
-        if (string.IsNullOrEmpty(csv))
-        {
-            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
-            return;
-        }
-
-        try
-        {
             await _dateFileService.SaveContent(csv);
-        }
-        catch (IOException)
-        {
-            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
-            return;
-        }
-
-        string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
-            _settings.SaveDirectory, _settings.FileExtension);
-        string pathToOlderFile;
-        try
-        {
+         
+            string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
+                _settings.SaveDirectory, _settings.FileExtension);
+            string pathToOlderFile;
+       
             pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
+       
+
+            IEnumerable<StockModel> recentHoldings;
+            IEnumerable<StockModel> pastHoldings;
+      
+            recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
+            pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+        
+
+            var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
+
+            PrintResultToConsole(diffResult);
+
+            await _outputService.Output(diffResult, _settings.SaveDirectory);
+            
         }
         catch (CsvFilePathNotFoundException e)
         {
             System.Console.WriteLine(e.Message);
             return;
         }
-
-        IEnumerable<StockModel> recentHoldings;
-        IEnumerable<StockModel> pastHoldings;
-        try
+        catch (IOException)
         {
-            recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
-            pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
+            return;
+        }
+        catch (InvalidDownloadException e)
+        {
+            System.Console.WriteLine(e.Message);
+            return;
         }
         catch (MissingFieldException)
         {
             System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException));
             return;
         }
-
-        var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
-
-        PrintResultToConsole(diffResult);
-
-        await _outputService.Output(diffResult, _settings.SaveDirectory);
+        catch (Exception e) {
+            System.Console.WriteLine(e.Message);
+            return;
+        }
+       
     }
 
     private void PrintResultToConsole(HoldingsDifferenceModel diffResult)

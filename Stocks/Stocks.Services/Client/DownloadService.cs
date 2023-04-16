@@ -18,23 +18,22 @@ public class DownloadService : IDownloadService
     public async Task<string?> DownloadFile(string path)
     {
         string? csv = null;
-
         var requestMessage = CreateGetRequestMessage(path);
-        try
+       
+        HttpResponseMessage responseMessage = await _client.SendAsync(requestMessage);
+        if (!responseMessage.IsSuccessStatusCode)
         {
-            HttpResponseMessage responseMessage = await _client.SendAsync(requestMessage);
-            if (!responseMessage.IsSuccessStatusCode)
-            {
-                throw new InvalidDownloadException();
-            }
+            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload));
+        }
 
-            csv = await responseMessage.Content.ReadAsStringAsync();
-            return csv;
-        }
-        catch (Exception )
+        csv = await responseMessage.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrEmpty(csv))
         {
-            throw new InvalidDownloadException();
+            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
         }
+
+        return csv;
     }
 
     private HttpRequestMessage CreateGetRequestMessage(string url)
