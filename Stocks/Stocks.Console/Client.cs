@@ -48,6 +48,12 @@ public class Client
 
             csv = await _download.DownloadFile(_settings.CsvUrl);
 
+            if (string.IsNullOrEmpty(csv))
+            {
+                System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomException.EmptyCsvFile));
+                return;
+            }
+
             await _dateFileService.SaveContent(csv);
          
             string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
@@ -78,7 +84,7 @@ public class Client
         }
         catch (IOException)
         {
-            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException));
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomException.IoException));
             return;
         }
         catch (InvalidDownloadException e)
@@ -88,7 +94,7 @@ public class Client
         }
         catch (MissingFieldException)
         {
-            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException));
+            System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomException.MissingFieldException));
             return;
         }
         catch (Exception e) {

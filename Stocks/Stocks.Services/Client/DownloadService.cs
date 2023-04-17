@@ -23,15 +23,10 @@ public class DownloadService : IDownloadService
         HttpResponseMessage responseMessage = await _client.SendAsync(requestMessage);
         if (!responseMessage.IsSuccessStatusCode)
         {
-            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload));
+            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomException.InvalidDownload));
         }
 
         csv = await responseMessage.Content.ReadAsStringAsync();
-
-        if (string.IsNullOrEmpty(csv))
-        {
-            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile));
-        }
 
         return csv;
     }

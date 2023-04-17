@@ -60,7 +60,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
-        Assert.That(ExceptionStrings.GetExceptionMessage(CustomExecption.InvalidDownload),
+        Assert.That(ExceptionStrings.GetExceptionMessage(CustomException.InvalidDownload),
             Is.EqualTo(consoleOutput.ToString().Trim()));
     }
 
@@ -79,7 +79,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
-        Assert.That(ExceptionStrings.GetExceptionMessage(CustomExecption.EmptyCsvFile),
+        Assert.That(ExceptionStrings.GetExceptionMessage(CustomException.EmptyCsvFile),
             Is.EqualTo(consoleOutput.ToString().Trim()));
     }
 
@@ -101,7 +101,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
-        Assert.That(ExceptionStrings.GetExceptionMessage(CustomExecption.CsvFilePathNotFound),
+        Assert.That(ExceptionStrings.GetExceptionMessage(CustomException.CsvFilePathNotFound),
             Is.EqualTo(consoleOutput.ToString().Trim()));
     }
 
@@ -121,7 +121,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
-        Assert.That(ExceptionStrings.GetExceptionMessage(CustomExecption.IoException),
+        Assert.That(ExceptionStrings.GetExceptionMessage(CustomException.IoException),
             Is.EqualTo(consoleOutput.ToString().Trim()));
     }
 
@@ -143,7 +143,7 @@ public class ClientTests
 
         // assert
         Assert.IsNotEmpty(consoleOutput.ToString());
-        Assert.That(ExceptionStrings.GetExceptionMessage(CustomExecption.MissingFieldException),
+        Assert.That(ExceptionStrings.GetExceptionMessage(CustomException.MissingFieldException),
             Is.EqualTo(consoleOutput.ToString().Trim()));
     }
 
