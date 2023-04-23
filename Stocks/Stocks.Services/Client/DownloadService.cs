@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Stocks.Services.Exceptions;
 using Stocks.Services.Models.Configuration;
 
 namespace Stocks.Services.Client;
@@ -17,14 +18,16 @@ public class DownloadService : IDownloadService
     public async Task<string?> DownloadFile(string path)
     {
         string? csv = null;
-
         var requestMessage = CreateGetRequestMessage(path);
+       
         HttpResponseMessage responseMessage = await _client.SendAsync(requestMessage);
-
-        if (responseMessage.IsSuccessStatusCode)
+        if (!responseMessage.IsSuccessStatusCode)
         {
-            csv = await responseMessage.Content.ReadAsStringAsync();
+            throw new InvalidDownloadException(ExceptionStrings.GetExceptionMessage(CustomException.InvalidDownload));
         }
+
+        csv = await responseMessage.Content.ReadAsStringAsync();
+
         return csv;
     }
 
