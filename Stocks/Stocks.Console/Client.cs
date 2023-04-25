@@ -24,7 +24,7 @@ public class Client
         IFileService dateFileService,
         IParseService parserService,
         IHoldingsDifferenceService differenceService,
-        IConfiguration configuration,
+        Settings settings,
         IOutputService outputService)
     {
         _downloadService = downloadService;
@@ -32,8 +32,7 @@ public class Client
         _parserService = parserService;
         _differenceService = differenceService;
         _outputService = outputService;
-
-        _settings = Settings.Get(configuration);
+        _settings = settings;
     }
 
     public void Run()

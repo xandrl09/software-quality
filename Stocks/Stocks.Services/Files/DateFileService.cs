@@ -10,9 +10,9 @@ public class DateFileService : IFileService
 {
     private readonly Settings _settings;
 
-    public DateFileService(IConfiguration configuration)
+    public DateFileService(Settings settings)
     {
-        _settings = Settings.Get(configuration);
+        _settings = settings;
     }
 
     public async Task SaveContent(string content, string extension)

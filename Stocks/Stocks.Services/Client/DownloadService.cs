@@ -9,10 +9,10 @@ public class DownloadService : IDownloadService
     private readonly HttpClient _client;
     private readonly Settings _settings;
 
-    public DownloadService(IConfiguration configuration, 
+    public DownloadService(Settings settings, 
         HttpClient client)
     {
-        _settings = Settings.Get(configuration);
+        _settings = settings;
         _client = client;
     }
 

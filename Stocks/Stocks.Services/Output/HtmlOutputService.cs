@@ -11,9 +11,9 @@ namespace Stocks.Services.Output
     {
         private readonly Settings _settings;
 
-        public HtmlOutputService(IConfiguration configuration)
+        public HtmlOutputService(Settings settings)
         {
-            _settings = Settings.Get(configuration);
+            _settings = settings;
         }
 
         public async Task<string> GenerateOutput(HoldingsDifferenceModel differences)
