@@ -4,6 +4,7 @@ using Stocks.Services.Files;
 using Stocks.Services.Helpers;
 using Stocks.Services.Client;
 using Stocks.Services.Exceptions;
+using Stocks.Services.Export;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
 using Stocks.Services.Parsers;
@@ -18,6 +19,7 @@ public class Client
     private readonly IParseService _parserService;
     private readonly IHoldingsDifferenceService _differenceService;
     private readonly IOutputService _outputService;
+    private readonly IExportService _exportService;
     private readonly Settings _settings;
 
     public Client(IDownloadService downloadService,
@@ -25,13 +27,15 @@ public class Client
         IParseService parserService,
         IHoldingsDifferenceService differenceService,
         Settings settings,
-        IOutputService outputService)
+        IOutputService outputService,
+        IExportService exportService)
     {
         _downloadService = downloadService;
         _dateFileService = dateFileService;
         _parserService = parserService;
         _differenceService = differenceService;
         _outputService = outputService;
+        _exportService = exportService;
         _settings = settings;
     }
 
@@ -77,6 +81,7 @@ public class Client
 
             await _dateFileService.SaveContent(htmlOutput, ".html");
 
+            await _exportService.Export(htmlOutput);
         }
         catch (CsvFilePathNotFoundException e)
         {

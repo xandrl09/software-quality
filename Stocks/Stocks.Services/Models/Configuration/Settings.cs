@@ -9,6 +9,8 @@ namespace Stocks.Services.Models.Configuration
         public string FileExtension { get; set; }
         public string CsvUrl { get; set; }
         public string UserAgent { get; set; }
+        public SmtpCredentials Smtp { get; set; } = new();
+        public EmailSettings Email { get; set; } = new();
 
         public static Settings Get(IConfiguration configuration)
         {
