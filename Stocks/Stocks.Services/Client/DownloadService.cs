@@ -9,10 +9,11 @@ public class DownloadService : IDownloadService
     private readonly HttpClient _client;
     private readonly Settings _settings;
 
-    public DownloadService(IConfiguration configuration)
+    public DownloadService(IConfiguration configuration, 
+        HttpClient client)
     {
         _settings = Settings.Get(configuration);
-        _client = new HttpClient();
+        _client = client;
     }
 
     public async Task<string?> DownloadFile(string path)

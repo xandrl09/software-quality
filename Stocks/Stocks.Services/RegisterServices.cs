@@ -9,7 +9,7 @@ namespace Stocks.Services
 {
     public static class RegisterServices
     {
-        public static void Register(IServiceCollection services)
+        public static void AddStocksServices(this IServiceCollection services)
         {
             services.AddTransient<IDownloadService, DownloadService>();
             services.AddTransient<IHoldingsDifferenceService, HoldingsDifferenceService>();
