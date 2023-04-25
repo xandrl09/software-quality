@@ -182,4 +182,14 @@ public class ClientTests
         Assert.IsNotEmpty(consoleOutput.ToString());
         StringAssert.Contains("Microsoft", consoleOutput.ToString().Trim());
     }
+
+    [Test]
+    public async Task Test1()
+    {
+        var client = new MockedClient();
+            client
+            .CanNotDownloadData()
+            .RunAsync()
+            .AssertException(ExceptionStrings.GetExceptionMessage(CustomException.InvalidDownload),client.ConsoleOutput.ToString().Trim());
+    }
 }
