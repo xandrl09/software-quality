@@ -15,27 +15,27 @@ public class DateFileService : IFileService
         _settings = Settings.Get(configuration);
     }
 
-    public async Task SaveContent(string content)
+    public async Task SaveContent(string content, string extension)
     {
-        string path = GetPathByDate(DateTime.Today);
+        string path = GetPathByDate(DateTime.Today, extension);
         await File.WriteAllTextAsync(path, content);
     }
 
-    public async Task<string> LoadContent(DateTime date)
+    public async Task<string> LoadContent(DateTime date, string extension)
     {
-        string path = GetPathByDate(date);
+        string path = GetPathByDate(date, extension);
         string content = await LoadContent(path);
         return content;
     }
 
-    public async Task<string> LoadLastAvailableContent()
+    public async Task<string> LoadLastAvailableContent(string dir, string extension)
     {
-        return await LoadContent(GetLastAvailableFilePath());
+        return await LoadContent(GetLastAvailableFilePath(dir, extension));
     }
 
-    public string GetLastAvailableFilePath()
+    public string GetLastAvailableFilePath(string dir, string extension)
     {
-        var availableFileNames = Directory.GetFiles(_settings.SaveDirectory, $"*{_settings.FileExtension}");
+        var availableFileNames = Directory.GetFiles(dir, $"*{extension}");
 
         var lastKnownFile = availableFileNames
             .Select(x => new KeyValuePair<DateTime, string>(ParseFileName(x), x))
@@ -52,10 +52,10 @@ public class DateFileService : IFileService
         return lastKnownFile;
     }
 
-    private string GetPathByDate(DateTime date)
+    private string GetPathByDate(DateTime date, string extension)
     {
         return PathHelper.GetDateFilePath(date, _settings.FileNameFormat, _settings.SaveDirectory,
-            _settings.FileExtension);
+            extension);
     }
 
     private async Task<string> LoadContent(string path)

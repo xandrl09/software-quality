@@ -54,13 +54,13 @@ public class Client
                 return;
             }
 
-            await _dateFileService.SaveContent(csv);
+            await _dateFileService.SaveContent(csv, _settings.FileExtension);
          
             string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
                 _settings.SaveDirectory, _settings.FileExtension);
             string pathToOlderFile;
        
-            pathToOlderFile = _dateFileService.GetLastAvailableFilePath();
+            pathToOlderFile = _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
        
 
             IEnumerable<StockModel> recentHoldings;
@@ -74,8 +74,10 @@ public class Client
 
             PrintResultToConsole(diffResult);
 
-            await _outputService.Output(diffResult, _settings.SaveDirectory);
-            
+            var htmlOutput = await _outputService.GenerateOutput(diffResult);
+
+            await _dateFileService.SaveContent(htmlOutput, ".html");
+
         }
         catch (CsvFilePathNotFoundException e)
         {

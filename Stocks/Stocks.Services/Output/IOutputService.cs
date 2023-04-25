@@ -4,6 +4,6 @@ namespace Stocks.Services.Output
 {
     public interface IOutputService
     {
-        public Task Output(HoldingsDifferenceModel differences, string destination);
+        public Task<string> GenerateOutput(HoldingsDifferenceModel differences);
     }
 }

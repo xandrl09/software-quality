@@ -2,9 +2,9 @@
 {
     public interface IFileService
     {
-        public Task SaveContent(string content);
-        public Task<string> LoadContent(DateTime date);
-        public Task<string> LoadLastAvailableContent();
-        public string GetLastAvailableFilePath();
+        public Task SaveContent(string content, string extension);
+        public Task<string> LoadContent(DateTime date, string extension);
+        public Task<string> LoadLastAvailableContent(string dir, string extension);
+        public string GetLastAvailableFilePath(string dir, string extension);
     }
 }

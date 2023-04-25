@@ -16,7 +16,7 @@ namespace Stocks.Services.Output
             _settings = Settings.Get(configuration);
         }
 
-        public async Task Output(HoldingsDifferenceModel differences, string destination)
+        public async Task<string> GenerateOutput(HoldingsDifferenceModel differences)
         {
             var html = CreateHtml();
             html = html.Append(CreateHead());
@@ -34,9 +34,7 @@ namespace Stocks.Services.Output
 
             html = html.Append(body);
 
-            await using var streamWriter = new StreamWriter(GetDestinationFilename(destination));
-
-            html.WriteTo(streamWriter, HtmlEncoder.Default);
+            return html.ToHtmlString();
         }
 
         private HtmlTag CreateHtml()
