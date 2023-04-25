@@ -13,23 +13,23 @@ namespace Stocks.Console;
 
 public class Client
 {
-    private readonly IDownloadService _download;
+    private readonly IDownloadService _downloadService;
     private readonly IFileService _dateFileService;
-    private readonly IParseService _parser;
+    private readonly IParseService _parserService;
     private readonly IHoldingsDifferenceService _differenceService;
     private readonly IOutputService _outputService;
     private readonly Settings _settings;
 
-    public Client(IDownloadService download,
+    public Client(IDownloadService downloadService,
         IFileService dateFileService,
-        IParseService parser,
+        IParseService parserService,
         IHoldingsDifferenceService differenceService,
         IConfiguration configuration,
         IOutputService outputService)
     {
-        _download = download;
+        _downloadService = downloadService;
         _dateFileService = dateFileService;
-        _parser = parser;
+        _parserService = parserService;
         _differenceService = differenceService;
         _outputService = outputService;
 
@@ -46,7 +46,7 @@ public class Client
         string? csv;
         try {
 
-            csv = await _download.DownloadFile(_settings.CsvUrl);
+            csv = await _downloadService.DownloadFile(_settings.CsvUrl);
 
             if (string.IsNullOrEmpty(csv))
             {
@@ -66,8 +66,8 @@ public class Client
             IEnumerable<StockModel> recentHoldings;
             IEnumerable<StockModel> pastHoldings;
       
-            recentHoldings = await _parser.GetStocksAsync(pathToRecentFile);
-            pastHoldings = await _parser.GetStocksAsync(pathToOlderFile);
+            recentHoldings = await _parserService.GetStocksAsync(pathToRecentFile);
+            pastHoldings = await _parserService.GetStocksAsync(pathToOlderFile);
         
 
             var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
