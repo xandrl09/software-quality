@@ -33,8 +33,8 @@ builder.Services.AddQuartz(q =>
 
     q.ScheduleJob<StocksDiffJob>(trigger => trigger
         .WithIdentity("Stocks Diff Job")
-        .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(5)))
-        .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Day))
+        .StartNow()
+        .WithDailyTimeIntervalSchedule(x => x.WithInterval(24, IntervalUnit.Hour))
         .WithDescription("Creates a difference between stocks in two dates and sends an email")
     );
 });
