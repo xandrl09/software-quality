@@ -4,6 +4,7 @@ using Stocks.Console;
 using Stocks.Services.Client;
 using Stocks.Services.Diff;
 using Stocks.Services.Exceptions;
+using Stocks.Services.Export;
 using Stocks.Services.Files;
 using Stocks.Services.Models;
 using Stocks.Services.Models.Configuration;
@@ -16,25 +17,22 @@ public class MockedClient
 {
     public Client TestClient { get; }
     private StringWriter? ConsoleOutput { get; set; }
-    private IDownloadService _download;
+    private IDownloadService _downloadService;
     private IFileService _dateFileService;
-    private IParseService _parser;
+    private IParseService _parserService;
     private IHoldingsDifferenceService _differenceService;
     private IOutputService _outputService;
-    private IConfiguration _configuration;
+    private IExportService _exportService;
     private Settings _settings;
 
     public void SetUp()
     {
-        _download = A.Fake<IDownloadService>();
+        _downloadService = A.Fake<IDownloadService>();
         _dateFileService = A.Fake<IFileService>();
-        _parser = A.Fake<IParseService>();
+        _parserService = A.Fake<IParseService>();
         _differenceService = A.Fake<IHoldingsDifferenceService>();
         _outputService = A.Fake<IOutputService>();
-        _configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .Build();
+        _exportService = A.Fake<IExportService>();
 
         _settings = new Settings();
         _settings.CsvUrl =
@@ -51,54 +49,59 @@ public class MockedClient
     public MockedClient()
     {
         SetUp();
-        TestClient = new Client(_download, _dateFileService, _parser, _differenceService, _configuration,
-            _outputService);
+        TestClient = new Client(_downloadService, 
+            _dateFileService, 
+            _parserService, 
+            _differenceService, 
+            _settings,
+            _outputService, 
+            _exportService);
     }
 
     public MockedClient CanDownloadData()
     {
-        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns(" ");
+        A.CallTo(() => _downloadService.DownloadFile(_settings.CsvUrl)).Returns(" ");
         return this;
     }
 
     public MockedClient CanNotDownloadData()
     {
-        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Throws<InvalidDownloadException>();
+        A.CallTo(() => _downloadService.DownloadFile(_settings.CsvUrl)).Throws<InvalidDownloadException>();
         return this;
     }
     
     public MockedClient DownloadEmptyData()
     {
-        A.CallTo(() => _download.DownloadFile(_settings.CsvUrl)).Returns("");
+        A.CallTo(() => _downloadService.DownloadFile(_settings.CsvUrl)).Returns("");
         return this;
     }
     
     public MockedClient CanSaveContent()
     {
-        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).DoesNothing();
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored, _settings.FileExtension)).DoesNothing();
         return this;
     }
     public MockedClient CanNotSaveContent()
     {
-        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored)).Throws<IOException>();
+        A.CallTo(() => _dateFileService.SaveContent(A<string>.Ignored, _settings.FileExtension)).Throws<IOException>();
         return this;
     }
     
     public MockedClient CanGetLastAvailableFilePath()
     {
-        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Returns("valid path");
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension)).Returns("valid path");
         return this;
     }
     
     public MockedClient CanNotGetLastAvailableFilePath()
     {
-        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Throws<CsvFilePathNotFoundException>();
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension)).Throws<CsvFilePathNotFoundException>();
         return this;
     }
     
     public MockedClient CanNotParseData()
     {
-        A.CallTo(() => _parser.GetStocksAsync(A<string>.Ignored)).Throws<MissingFieldException>();
+        A.CallTo(() => _parserService.GetStocksAsync(A<string>.Ignored)).Throws<MissingFieldException>();
         return this;
     }
     
@@ -114,13 +117,13 @@ public class MockedClient
         model.IncreasedPositons = new List<StockDifferenceModel>();
         model.ReducedPositions = new List<StockDifferenceModel>();
         
-        A.CallTo(() => _parser.GetStocksAsync(A<string>.Ignored)).Returns(stocksList);
+        A.CallTo(() => _parserService.GetStocksAsync(A<string>.Ignored)).Returns(stocksList);
         return this;
     }
     
     public MockedClient GetLastAvailableFilePathThrowsException()
     {
-        A.CallTo(() => _dateFileService.GetLastAvailableFilePath()).Throws<CsvFilePathNotFoundException>();
+        A.CallTo(() => _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension)).Throws<CsvFilePathNotFoundException>();
         return this;
     }
     
