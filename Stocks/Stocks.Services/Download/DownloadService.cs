@@ -2,17 +2,18 @@
 using Stocks.Services.Exceptions;
 using Stocks.Services.Models.Configuration;
 
-namespace Stocks.Services.Client;
+namespace Stocks.Services.Download;
 
 public class DownloadService : IDownloadService
 {
     private readonly HttpClient _client;
     private readonly Settings _settings;
 
-    public DownloadService(IConfiguration configuration)
+    public DownloadService(Settings settings, 
+        HttpClient client)
     {
-        _settings = Settings.Get(configuration);
-        _client = new HttpClient();
+        _settings = settings;
+        _client = client;
     }
 
     public async Task<string?> DownloadFile(string path)

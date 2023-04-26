@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 using Stocks.Console;
 using Stocks.Services;
 
@@ -13,8 +14,9 @@ var hostBuilder = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices(services =>
     {
+        services.AddHttpClient();
         services.AddTransient<Client>();
-        RegisterServices.Register(services);
+        services.AddStocksServices();
     });
 
 using IHost host = hostBuilder.Build();

@@ -1,4 +1,4 @@
-﻿namespace Stocks.Services.Client
+﻿namespace Stocks.Services.Download
 {
     public interface IDownloadService
     {
