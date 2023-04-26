@@ -2,7 +2,7 @@
 using Stocks.Services.Diff;
 using Stocks.Services.Files;
 using Stocks.Services.Helpers;
-using Stocks.Services.Client;
+using Stocks.Services.Download;
 using Stocks.Services.Exceptions;
 using Stocks.Services.Export;
 using Stocks.Services.Models;

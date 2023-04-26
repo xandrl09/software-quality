@@ -2,7 +2,7 @@
 using Stocks.Services.Exceptions;
 using Stocks.Services.Models.Configuration;
 
-namespace Stocks.Services.Client;
+namespace Stocks.Services.Download;
 
 public class DownloadService : IDownloadService
 {

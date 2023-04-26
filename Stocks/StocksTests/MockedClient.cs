@@ -1,7 +1,7 @@
 using FakeItEasy;
 using Microsoft.Extensions.Configuration;
 using Stocks.Console;
-using Stocks.Services.Client;
+using Stocks.Services.Download;
 using Stocks.Services.Diff;
 using Stocks.Services.Exceptions;
 using Stocks.Services.Export;

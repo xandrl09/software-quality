@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Stocks.Services.Client;
+using Stocks.Services.Download;
 using Stocks.Services.Diff;
 using Stocks.Services.Export;
 using Stocks.Services.Files;
