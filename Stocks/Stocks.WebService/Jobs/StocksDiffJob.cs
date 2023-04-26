@@ -60,11 +60,8 @@ namespace Stocks.WebService.Jobs
 
                 var pathToOlderFile = _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
 
-                IEnumerable<StockModel> recentHoldings;
-                IEnumerable<StockModel> pastHoldings;
-
-                recentHoldings = await _parserService.GetStocksAsync(pathToRecentFile);
-                pastHoldings = await _parserService.GetStocksAsync(pathToOlderFile);
+                var recentHoldings = await _parserService.GetStocksAsync(pathToRecentFile);
+                var pastHoldings = await _parserService.GetStocksAsync(pathToOlderFile);
 
                 var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
 
