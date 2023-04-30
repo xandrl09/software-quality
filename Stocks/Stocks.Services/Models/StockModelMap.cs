@@ -2,6 +2,9 @@
 
 namespace Stocks.Services.Models
 {
+    /// <summary>
+    /// Class <c>StockModelMap</c> represents the mapping of the stock model.
+    /// </summary>
     public class StockModelMap : ClassMap<StockModel>
     {
         public StockModelMap()

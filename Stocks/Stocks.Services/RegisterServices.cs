@@ -10,6 +10,9 @@ using Stocks.Services.Parsers;
 
 namespace Stocks.Services
 {
+    /// <summary>
+    /// Registers services for dependency injection.
+    /// </summary>
     public static class RegisterServices
     {
         public static void AddStocksServices(this IServiceCollection services)

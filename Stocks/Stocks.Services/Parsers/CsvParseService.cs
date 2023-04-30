@@ -5,8 +5,16 @@ using System.Globalization;
 
 namespace Stocks.Services.Parsers;
 
+/// <summary>
+/// Class <c>CsvParseService</c> represents a service for parsing CSV files.
+/// </summary>
 public class CsvParseService : IParseService
 {
+    /// <summary>
+    /// Parses a CSV file.
+    /// </summary>
+    /// <param name="filePath">The path to the CSV file.</param>
+    /// <returns>A list of <c>StockModel</c> objects.</returns>
     public async Task<IEnumerable<StockModel>> GetStocksAsync(string filePath)
     {
         using var reader = new StreamReader(filePath);

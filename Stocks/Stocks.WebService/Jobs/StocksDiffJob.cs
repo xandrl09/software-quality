@@ -12,7 +12,10 @@ using Stocks.Services.Parsers;
 
 namespace Stocks.WebService.Jobs
 {
-    public class StocksDiffJob: IJob
+    /// <summary>
+    /// Class <c>StocksDiffJob</c> represents a job to be performed by the scheduler to create a daily diff of stocks.
+    /// </summary>
+    public class StocksDiffJob : IJob
     {
         private readonly IDownloadService _downloadService;
         private readonly IFileService _dateFileService;
@@ -39,6 +42,12 @@ namespace Stocks.WebService.Jobs
             _exportService = exportService;
         }
 
+        /// <summary>
+        /// Executes the job. Downloads the CSV file, parses it, compares it to the previous day's CSV file,
+        /// generates an output and exports it.
+        /// In case of an exception, the exception message is printed to the console.
+        /// </summary>
+        /// <param name="context"></param>
         public async Task Execute(IJobExecutionContext context)
         {
             try
@@ -53,12 +62,13 @@ namespace Stocks.WebService.Jobs
 
                 await _dateFileService.SaveContent(csv, _settings.FileExtension);
 
-                string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, 
+                string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today,
                     _settings.FileNameFormat,
-                    _settings.SaveDirectory, 
+                    _settings.SaveDirectory,
                     _settings.FileExtension);
 
-                var pathToOlderFile = _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
+                var pathToOlderFile =
+                    _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
 
                 var recentHoldings = await _parserService.GetStocksAsync(pathToRecentFile);
                 var pastHoldings = await _parserService.GetStocksAsync(pathToOlderFile);

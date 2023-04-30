@@ -1,5 +1,8 @@
 ﻿namespace Stocks.Services.Models
 {
+    /// <summary>
+    /// Class <c>HoldingsDifferenceModel</c> represents the difference of holdings between two dates.
+    /// </summary>
     public class HoldingsDifferenceModel
     {
         public IEnumerable<StockModel> NewPositions { get; set; }

@@ -12,6 +12,9 @@ using Stocks.Services.Output;
 
 namespace Stocks.Console;
 
+/// <summary>
+/// Class <c>Client</c> is the entry point of the application.
+/// </summary>
 public class Client
 {
     private readonly IDownloadService _downloadService;
@@ -39,16 +42,23 @@ public class Client
         _settings = settings;
     }
 
+    /// <summary>
+    /// Runs the application.
+    /// </summary>
     public void Run()
     {
         RunAsync().GetAwaiter().GetResult();
     }
 
+    /// <summary>
+    /// Runs the application asynchronously.
+    /// In case of an exception, the exception message is printed to the console.
+    /// </summary>
     public async Task RunAsync()
     {
         string? csv;
-        try {
-
+        try
+        {
             csv = await _downloadService.DownloadFile(_settings.CsvUrl);
 
             if (string.IsNullOrEmpty(csv))
@@ -58,20 +68,21 @@ public class Client
             }
 
             await _dateFileService.SaveContent(csv, _settings.FileExtension);
-         
+
             string pathToRecentFile = PathHelper.GetDateFilePath(DateTime.Today, _settings.FileNameFormat,
                 _settings.SaveDirectory, _settings.FileExtension);
             string pathToOlderFile;
-       
-            pathToOlderFile = _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
-       
+
+            pathToOlderFile =
+                _dateFileService.GetLastAvailableFilePath(_settings.SaveDirectory, _settings.FileExtension);
+
 
             IEnumerable<StockModel> recentHoldings;
             IEnumerable<StockModel> pastHoldings;
-      
+
             recentHoldings = await _parserService.GetStocksAsync(pathToRecentFile);
             pastHoldings = await _parserService.GetStocksAsync(pathToOlderFile);
-        
+
 
             var diffResult = _differenceService.GetDifference(recentHoldings, pastHoldings);
 
@@ -103,13 +114,17 @@ public class Client
             System.Console.WriteLine(ExceptionStrings.GetExceptionMessage(CustomException.MissingFieldException));
             return;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             System.Console.WriteLine(e.Message);
             return;
         }
-       
     }
 
+    /// <summary>
+    /// Prints the result to the console.
+    /// </summary>
+    /// <param name="diffResult">Difference in positions of the holdings.</param>
     private void PrintResultToConsole(HoldingsDifferenceModel diffResult)
     {
         System.Console.WriteLine("New positions:");

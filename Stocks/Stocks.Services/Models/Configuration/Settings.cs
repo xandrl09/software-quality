@@ -2,6 +2,9 @@
 
 namespace Stocks.Services.Models.Configuration
 {
+    /// <summary>
+    /// Class <c>Settings</c> represents the settings for the application from the appsettings.json file.
+    /// </summary>
     public class Settings
     {
         public string SaveDirectory { get; set; }
