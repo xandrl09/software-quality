@@ -4,11 +4,19 @@ using Stocks.Services.Models.Configuration;
 
 namespace Stocks.Services.Download;
 
+/// <summary>
+/// Class <c>DownloadService</c> is responsible for downloading files.
+/// </summary>
 public class DownloadService : IDownloadService
 {
     private readonly HttpClient _client;
     private readonly Settings _settings;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="DownloadService"/>.
+    /// </summary>
+    /// <param name="settings">Settings.</param>
+    /// <param name="client">HTTP client.</param>
     public DownloadService(Settings settings, 
         HttpClient client)
     {
@@ -16,6 +24,12 @@ public class DownloadService : IDownloadService
         _client = client;
     }
 
+    /// <summary>
+    /// Downloads a file asynchronously.
+    /// </summary>
+    /// <param name="path">The path to the file.</param>
+    /// <returns>The file content.</returns>
+    /// <exception cref="InvalidDownloadException">Thrown when the download fails.</exception>
     public async Task<string?> DownloadFile(string path)
     {
         string? csv = null;
@@ -32,6 +46,11 @@ public class DownloadService : IDownloadService
         return csv;
     }
 
+    /// <summary>
+    /// Creates a GET request message.
+    /// </summary>
+    /// <param name="url">The URL.</param>
+    /// <returns>The request message.</returns>
     private HttpRequestMessage CreateGetRequestMessage(string url)
     {
         var request = new HttpRequestMessage()

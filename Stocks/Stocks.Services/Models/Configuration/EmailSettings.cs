@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Stocks.Services.Models.Configuration
 {
+    /// <summary>
+    /// Class <c>EmailSettings</c> represents the settings for sending emails.
+    /// </summary>
     public class EmailSettings
     {
         public string Sender { get; set; }

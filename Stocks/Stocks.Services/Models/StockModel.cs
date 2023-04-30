@@ -1,5 +1,8 @@
 ﻿namespace Stocks.Services.Models
 {
+    /// <summary>
+    /// Class <c>StockModel</c> represents a stock.
+    /// </summary>
     public class StockModel
     {
         public string Company { get; init; }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Stocks.Services.Models.Configuration
 {
+    /// <summary>
+    /// Class <c>SmtpCredentials</c> represents the credentials for the SMTP server.
+    /// </summary>
     public class SmtpCredentials
     {
         public string Host { get; set; }

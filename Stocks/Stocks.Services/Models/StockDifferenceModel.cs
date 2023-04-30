@@ -1,5 +1,8 @@
 ﻿namespace Stocks.Services.Models
 {
+    /// <summary>
+    /// Class <c>StockDifferenceModel</c> represents the difference of a stock between two dates.
+    /// </summary>
     public class StockDifferenceModel
     {
         public string CompanyName { get; set; }
