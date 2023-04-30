@@ -26,7 +26,7 @@ jobs:
         run: dotnet build Stocks/Stocks.WebService --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish Stocks.WebService -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish Stocks/Stocks.WebService -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
