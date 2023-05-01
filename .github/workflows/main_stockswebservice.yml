@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Restore packages
-        run: dotnet restore Stocks/Stocks.sln
+        run: dotnet restore Stocks/Stocks.sln 
         
       - name: Build with dotnet
         run: dotnet build Stocks/Stocks.WebService/Stocks.WebService.csproj  --configuration Release
